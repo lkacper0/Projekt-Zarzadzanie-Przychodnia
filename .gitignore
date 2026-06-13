@@ -28,3 +28,4 @@ Thumbs.db
 pgadmin-data/
 pgdata/
 pgadmin-data/sessions/
+docker-compose.yml

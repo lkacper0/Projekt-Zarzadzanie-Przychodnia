@@ -1,7 +1,7 @@
 services:
   laravelapp:
     container_name: laravelapp
-    image: francescoxx/laravelapp:1.0.3
+    #image: francescoxx/laravelapp:1.0.3
     build: .
     ports:
       - "8000:8000"
@@ -11,6 +11,7 @@ services:
       - .:/var/www/html
     depends_on:
       - db
+    tty: true
 
   db:
     container_name: db
