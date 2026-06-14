@@ -12,6 +12,7 @@
     <div class="doc-nav">
         <a href="{{ url('/PanelLekarza') }}" class="nav-btn">Mój Profil</a>
         <a href="{{ url('/PanelLekarza/uslugi') }}" class="nav-btn active">Usługi &amp; Cennik</a>
+        <a href="{{ url('/PanelLekarza/harmonogram') }}" class="nav-btn">Harmonogram</a>
     </div>
 
     @if(session('success'))

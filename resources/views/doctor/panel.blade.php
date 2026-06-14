@@ -12,6 +12,7 @@
     <div class="doc-nav">
         <a href="{{ url('/PanelLekarza') }}" class="nav-btn active">Mój Profil</a>
         <a href="{{ url('/PanelLekarza/uslugi') }}" class="nav-btn">Usługi &amp; Cennik</a>
+        <a href="{{ url('/PanelLekarza/harmonogram') }}" class="nav-btn">Harmonogram</a>
     </div>
 
     @if(session('success'))
@@ -25,7 +26,6 @@
 
     <div class="doc-grid">
 
-        {{-- Zdjęcie profilowe --}}
         <div class="doc-card photo-card">
             <div class="photo-wrapper">
                 @if($profile && $profile->profile_photo)
@@ -48,7 +48,6 @@
             @endif
         </div>
 
-        {{-- Formularz edycji profilu --}}
         <div class="doc-card form-card">
             <h2 class="card-title">Edytuj Profil</h2>
 

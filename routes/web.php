@@ -6,6 +6,7 @@ use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PatientController;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\ScheduleController;
 
 Route::get('/', function () {
     return view('glowna');
@@ -73,4 +74,13 @@ Route::get('/ListaWizyt', function () {
     }
     return app(PatientController::class)->visits();
 })->middleware('role:patient,doctor,admin');
+
+Route::get('/PanelLekarza/harmonogram', [ScheduleController::class, 'doctorSchedule']);
+Route::post('/PanelLekarza/harmonogram/generuj', [ScheduleController::class, 'generateSlots']);
+Route::delete('/PanelLekarza/harmonogram/slot/{id}/usun', [ScheduleController::class, 'deleteSlot']);
+
+Route::get('/Rezerwacja', [ScheduleController::class, 'bookingIndex']);
+Route::get('/Rezerwacja/lekarz/{id}', [ScheduleController::class, 'bookingDoctor']);
+Route::post('/Rezerwacja/slot/{id}', [ScheduleController::class, 'bookSlot']);
+
 

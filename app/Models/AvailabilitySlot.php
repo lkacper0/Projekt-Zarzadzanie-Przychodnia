@@ -29,4 +29,9 @@ class AvailabilitySlot extends Model
     {
         return $this->belongsTo(DoctorProfile::class, 'doctor_id');
     }
+
+    public function appointment(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(Appointment::class, 'slot_id');
+    }
 }
