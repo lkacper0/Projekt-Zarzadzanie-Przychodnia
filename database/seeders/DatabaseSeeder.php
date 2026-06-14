@@ -15,6 +15,29 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        // Seed Specializations
+        $specs = [
+            'Internista',
+            'Kardiologia',
+            'Pediatria',
+            'Dermatologia',
+            'Neurologia',
+            'Ginekologia',
+            'Chirurgia'
+        ];
+        
+        $specializationModels = [];
+        foreach ($specs as $specName) {
+            $specializationModels[$specName] = \App\Models\Specialization::create(['name' => $specName]);
+        }
+
+        // Seed Tags
+        $tagsData = ['NFZ', 'Prywatnie', 'Dzieci', 'Teleporada', 'Konsultacja online'];
+        $tagModels = [];
+        foreach ($tagsData as $tagName) {
+            $tagModels[$tagName] = \App\Models\Tag::create(['name' => $tagName]);
+        }
+
         $patient = User::factory()->create([
             'first_name' => 'Jan',
             'last_name' => 'Kowalski',
@@ -42,6 +65,9 @@ class DatabaseSeeder extends Seeder
             'is_accepted' => true,
             'avg_rating' => 4.50,
         ]);
+        // Attach Specialization and Tags
+        $doctorProfile->specializations()->attach($specializationModels['Internista']->id);
+        $doctorProfile->tags()->attach([$tagModels['NFZ']->id, $tagModels['Teleporada']->id]);
 
         $candidateUser = User::factory()->create([
             'first_name' => 'Marta',
@@ -50,12 +76,15 @@ class DatabaseSeeder extends Seeder
             'role' => 'patient',
         ]);
 
-        \App\Models\DoctorProfile::create([
+        $candidateProfile = \App\Models\DoctorProfile::create([
             'user_id' => $candidateUser->id,
             'bio' => 'Chciałabym dołączyć do zespołu jako pediatra.',
             'is_accepted' => false,
             'avg_rating' => 0.00,
         ]);
+        // Attach Specialization and Tags
+        $candidateProfile->specializations()->attach($specializationModels['Pediatria']->id);
+        $candidateProfile->tags()->attach([$tagModels['Prywatnie']->id, $tagModels['Dzieci']->id]);
 
         $service = \App\Models\Service::create([
             'doctor_id' => $doctorProfile->id,

@@ -1,0 +1,283 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap');
+
+.patient-container {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+    font-family: 'Inter', sans-serif;
+    min-height: calc(100vh - 280px);
+}
+
+.panel-title {
+    font-family: 'Outfit', sans-serif;
+    color: #003366;
+    font-size: 32px;
+    margin-bottom: 30px;
+    font-weight: 700;
+}
+
+/* Grids and Cards */
+.panel-grid {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 30px;
+}
+
+@media (max-width: 768px) {
+    .panel-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.panel-card {
+    background: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 10px 25px rgba(0, 51, 102, 0.05);
+    border: 1px solid #e2e8f0;
+    padding: 30px;
+    box-sizing: border-box;
+}
+
+.profile-card {
+    text-align: center;
+}
+
+.avatar-placeholder {
+    width: 90px;
+    height: 90px;
+    background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
+    color: white;
+    font-size: 36px;
+    font-weight: 700;
+    font-family: 'Outfit', sans-serif;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px auto;
+    box-shadow: 0 6px 15px rgba(74, 144, 226, 0.25);
+}
+
+.patient-name {
+    font-family: 'Outfit', sans-serif;
+    color: #003366;
+    font-size: 24px;
+    font-weight: 600;
+    margin: 0 0 8px 0;
+}
+
+.patient-email {
+    color: #64748b;
+    font-size: 15px;
+    margin: 0 0 20px 0;
+}
+
+.profile-details {
+    text-align: left;
+    border-top: 1px solid #e2e8f0;
+    padding-top: 20px;
+}
+
+.detail-item {
+    margin-bottom: 15px;
+}
+
+.detail-item label {
+    font-size: 12px;
+    color: #94a3b8;
+    text-transform: uppercase;
+    font-weight: 700;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.detail-item span {
+    font-size: 16px;
+    color: #1e293b;
+    font-weight: 500;
+}
+
+/* Quick Actions Card */
+.actions-card h2 {
+    font-family: 'Outfit', sans-serif;
+    color: #003366;
+    font-size: 22px;
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+.actions-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 20px;
+}
+
+@media (max-width: 480px) {
+    .actions-list {
+        grid-template-columns: 1fr;
+    }
+}
+
+.action-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background-color: #f8fafc;
+    border: 1.5px dashed #cbd5e1;
+    border-radius: 16px;
+    text-decoration: none;
+    color: #003366;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.action-btn:hover {
+    background-color: #f0f8ff;
+    border-color: #4a90e2;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(74, 144, 226, 0.08);
+}
+
+.action-btn span.icon {
+    font-size: 32px;
+    margin-bottom: 12px;
+}
+
+/* Tables styling */
+.table-responsive {
+    overflow-x: auto;
+    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+}
+
+.table-custom {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 15px;
+}
+
+.table-custom th {
+    background-color: #f8fafc;
+    color: #003366;
+    font-weight: 600;
+    padding: 16px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.table-custom td {
+    padding: 16px;
+    border-bottom: 1px solid #e2e8f0;
+    color: #334155;
+    vertical-align: middle;
+}
+
+.table-custom tr:last-child td {
+    border-bottom: none;
+}
+
+.table-custom tr:hover {
+    background-color: #f8fafc;
+}
+
+/* Status Badges */
+.badge-status {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.badge-pending {
+    background-color: #fef3c7;
+    color: #d97706;
+}
+
+.badge-confirmed {
+    background-color: #e0f2fe;
+    color: #0369a1;
+}
+
+.badge-completed {
+    background-color: #dcfce7;
+    color: #15803d;
+}
+
+.badge-cancelled {
+    background-color: #fee2e2;
+    color: #b91c1c;
+}
+
+/* Empty states */
+.empty-state {
+    text-align: center;
+    padding: 50px 20px;
+    color: #64748b;
+}
+
+.empty-state-icon {
+    font-size: 48px;
+    margin-bottom: 15px;
+}
+
+.empty-state p {
+    font-size: 16px;
+    margin: 0;
+}
+
+/* Recommendations Card styles */
+.recommendations-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.rec-item {
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 20px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+}
+
+.rec-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #f1f5f9;
+    padding-bottom: 12px;
+    margin-bottom: 12px;
+}
+
+.rec-doctor {
+    font-family: 'Outfit', sans-serif;
+    color: #003366;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.rec-date {
+    font-size: 14px;
+    color: #64748b;
+}
+
+.rec-body {
+    font-size: 15px;
+    color: #334155;
+    line-height: 1.6;
+}
+
+.rec-service {
+    display: inline-block;
+    padding: 4px 10px;
+    background-color: #f1f5f9;
+    color: #475569;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-top: 10px;
+}

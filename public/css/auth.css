@@ -1,0 +1,323 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap');
+
+.auth-body {
+    background: radial-gradient(circle at 10% 20%, rgba(240, 248, 255, 1) 0%, rgba(215, 235, 255, 1) 90%);
+    min-height: calc(100vh - 140px); /* Adjust for header/footer */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Inter', sans-serif;
+    padding: 40px 20px;
+    box-sizing: border-box;
+}
+
+.auth-container {
+    width: 100%;
+    max-width: 500px;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 24px;
+    box-shadow: 0 15px 35px rgba(0, 51, 102, 0.1), 0 5px 15px rgba(0, 0, 0, 0.05);
+    padding: 45px 40px;
+    box-sizing: border-box;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.auth-container:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 45px rgba(0, 51, 102, 0.15), 0 8px 25px rgba(0, 0, 0, 0.06);
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 35px;
+}
+
+.auth-header h1 {
+    font-family: 'Outfit', sans-serif;
+    color: #003366;
+    font-size: 32px;
+    font-weight: 700;
+    margin: 0 0 10px 0;
+}
+
+.auth-header p {
+    color: #64748b;
+    font-size: 16px;
+    margin: 0;
+}
+
+/* Form Styles */
+.form-group {
+    margin-bottom: 24px;
+    position: relative;
+}
+
+.form-group label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: #334155;
+    margin-bottom: 8px;
+}
+
+.input-wrapper {
+    position: relative;
+}
+
+.form-control {
+    width: 100%;
+    padding: 14px 16px;
+    font-size: 15px;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 12px;
+    background-color: #f8fafc;
+    color: #1e293b;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: #4a90e2;
+    background-color: #ffffff;
+    box-shadow: 0 0 0 4px rgba(74, 144, 226, 0.15);
+    outline: none;
+}
+
+.form-control::placeholder {
+    color: #94a3b8;
+}
+
+/* Textarea specific */
+textarea.form-control {
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* Segmented Control / Tabs for Role Picker */
+.role-picker {
+    display: flex;
+    background-color: #f1f5f9;
+    padding: 6px;
+    border-radius: 14px;
+    margin-bottom: 28px;
+    border: 1px solid #e2e8f0;
+}
+
+.role-option {
+    flex: 1;
+    text-align: center;
+}
+
+.role-option input[type="radio"] {
+    display: none;
+}
+
+.role-option label {
+    display: block;
+    padding: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #64748b;
+    cursor: pointer;
+    border-radius: 10px;
+    margin: 0;
+    transition: all 0.3s ease;
+}
+
+.role-option input[type="radio"]:checked + label {
+    background-color: #ffffff;
+    color: #4a90e2;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+/* Collapsible doctor details section */
+.doctor-details {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease, margin 0.3s ease;
+}
+
+.doctor-details.show {
+    max-height: 500px;
+    opacity: 1;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+/* Custom Select Styling */
+select.form-control {
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    background-size: 16px;
+    padding-right: 40px;
+}
+
+/* Checkbox container */
+.remember-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 28px;
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+    font-size: 14px;
+    color: #475569;
+}
+
+.checkbox-container input {
+    margin-right: 8px;
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+/* Button styles */
+.btn-auth {
+    width: 100%;
+    padding: 15px;
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: #ffffff;
+    background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(74, 144, 226, 0.25);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-auth:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(74, 144, 226, 0.35);
+}
+
+.btn-auth:active {
+    transform: translateY(0);
+}
+
+.btn-auth:disabled {
+    background: #cbd5e1;
+    color: #94a3b8;
+    box-shadow: none;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Alerts and errors */
+.alert {
+    padding: 14px 16px;
+    border-radius: 12px;
+    font-size: 14px;
+    margin-bottom: 24px;
+    line-height: 1.5;
+}
+
+.alert-danger {
+    background-color: #fef2f2;
+    color: #b91c1c;
+    border: 1px solid #fee2e2;
+}
+
+.alert-success {
+    background-color: #f0fdf4;
+    color: #166534;
+    border: 1px solid #dcfce7;
+}
+
+.error-feedback {
+    color: #dc2626;
+    font-size: 12px;
+    margin-top: 6px;
+    display: block;
+    font-weight: 500;
+}
+
+.form-control.is-invalid {
+    border-color: #dc2626;
+    background-color: #fff5f5;
+}
+
+.form-control.is-invalid:focus {
+    box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.15);
+}
+
+/* Links footer */
+.auth-footer {
+    text-align: center;
+    margin-top: 30px;
+    font-size: 14px;
+    color: #64748b;
+}
+
+.auth-footer a {
+    color: #4a90e2;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s ease;
+}
+
+.auth-footer a:hover {
+    color: #357abd;
+    text-decoration: underline;
+}
+
+/* Spinner */
+.spinner {
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top: 3px solid #ffffff;
+    width: 20px;
+    height: 20px;
+    animation: spin 0.8s linear infinite;
+    margin-right: 10px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Pending Account Card specifics */
+.pending-card {
+    text-align: center;
+}
+
+.pending-icon {
+    font-size: 64px;
+    margin-bottom: 20px;
+    animation: pulse 2s infinite ease-in-out;
+    display: inline-block;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+}
+
+.pending-card h2 {
+    font-family: 'Outfit', sans-serif;
+    color: #003366;
+    font-size: 24px;
+    margin-bottom: 16px;
+}
+
+.pending-card p {
+    color: #475569;
+    line-height: 1.6;
+    margin-bottom: 30px;
+}

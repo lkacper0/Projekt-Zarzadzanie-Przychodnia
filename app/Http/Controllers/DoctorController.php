@@ -127,4 +127,71 @@ class DoctorController extends Controller
 
         return redirect('/PanelLekarza/uslugi')->with('success', 'Usługa usunięta!');
     }
+
+    /**
+     * Display list of appointments/visits for the doctor.
+     */
+    public function visits()
+    {
+        $user = Auth::user();
+        $profile = DoctorProfile::where('user_id', $user->id)->firstOrFail();
+        $appointments = \App\Models\Appointment::whereHas('slot', function ($query) use ($profile) {
+                $query->where('doctor_id', $profile->id);
+            })
+            ->with(['patient', 'slot', 'service'])
+            ->orderBy('id', 'desc')
+            ->get();
+
+        return view('doctor.visits', compact('profile', 'appointments'));
+    }
+
+    /**
+     * Display working hours/availability slots.
+     */
+    public function workingHours()
+    {
+        $user = Auth::user();
+        $profile = DoctorProfile::where('user_id', $user->id)->firstOrFail();
+        $slots = \App\Models\AvailabilitySlot::where('doctor_id', $profile->id)
+            ->orderBy('start_time', 'asc')
+            ->get();
+
+        return view('doctor.working_hours', compact('profile', 'slots'));
+    }
+
+    /**
+     * Display patient records list.
+     */
+    public function records()
+    {
+        $user = Auth::user();
+        $profile = DoctorProfile::where('user_id', $user->id)->firstOrFail();
+        $patients = \App\Models\User::whereHas('appointments.slot', function ($q) use ($profile) {
+                $q->where('doctor_id', $profile->id);
+            })
+            ->distinct()
+            ->get();
+
+        return view('doctor.records', compact('profile', 'patients'));
+    }
+
+    /**
+     * Display medical notes / history of patients.
+     */
+    public function history()
+    {
+        $user = Auth::user();
+        $profile = DoctorProfile::where('user_id', $user->id)->firstOrFail();
+        $appointments = \App\Models\Appointment::whereHas('slot', function ($q) use ($profile) {
+                $q->where('doctor_id', $profile->id);
+            })
+            ->whereNotNull('medical_note')
+            ->where('medical_note', '!=', '')
+            ->with(['patient', 'service', 'slot'])
+            ->orderBy('id', 'desc')
+            ->get();
+
+        return view('doctor.history', compact('profile', 'appointments'));
+    }
 }
+

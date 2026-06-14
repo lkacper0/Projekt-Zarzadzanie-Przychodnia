@@ -36,7 +36,7 @@
                     <a href="{{ url('/HistoriaPacjenta') }}">Historia Pacjenta</a>
                 @else
                     <a href="{{ url('/PanelUzytkownika') }}">Moje Dane</a>
-                    <a href="{{ url('/Rezerwacja') }}">Rezerwacja</a>
+                    <a href="{{ url('/Lekarze') }}">Wyszukaj Lekarza</a>
                     <a href="{{ url('/ListaWizyt') }}">Moje Wizyty</a>
                     <a href="{{ url('/DiagnozaZalecenia') }}">Diagnoza i Zalecenia</a>
                 @endif

@@ -12,7 +12,15 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        $csrfExceptions = ['api/*'];
+        if (env('APP_ENV') === 'testing' || ($_ENV['APP_ENV'] ?? null) === 'testing') {
+            $csrfExceptions[] = '*';
+        }
+        $middleware->validateCsrfTokens(except: $csrfExceptions);
+
+        $middleware->alias([
+            'role' => \App\Http\Middleware\RoleMiddleware::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
