@@ -41,4 +41,14 @@ class User extends Authenticatable
     {
         return $this->password_hash;
     }
+
+    public function isDoctor()
+    {
+        return $this->role === 'doctor';
+    }
+
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
+    }
 }
