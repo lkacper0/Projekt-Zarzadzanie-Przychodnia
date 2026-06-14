@@ -15,17 +15,14 @@ Route::get('/o-nas', function () {
     return view('about');
 });
 
-// Authentication routes (Guest only)
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
     Route::get('/Rejestracja', [AuthController::class, 'showRegister'])->name('register');
 });
 
-// Logout and pending activation page
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('/oczekiwanie-na-akceptacje', [AuthController::class, 'showPending'])->name('pending');
 
-// Admin panel (role: admin)
 Route::middleware(['role:admin'])->group(function () {
     Route::get('/admin', [AdminController::class, 'index']);
     Route::get('/admin/create', [AdminController::class, 'create']);
@@ -44,7 +41,6 @@ Route::middleware(['role:admin'])->group(function () {
     Route::post('/admin/{id}/toggle-ban', [AdminController::class, 'toggleBan']);
 });
 
-// Doctor panel (role: doctor)
 Route::middleware(['role:doctor'])->group(function () {
     Route::get('/PanelLekarza', [DoctorController::class, 'panel']);
     Route::post('/PanelLekarza/profil', [DoctorController::class, 'updateProfile']);
@@ -61,7 +57,6 @@ Route::middleware(['role:doctor'])->group(function () {
     Route::get('/HistoriaPacjenta', [DoctorController::class, 'history']);
 });
 
-// Patient panel (role: patient)
 Route::middleware(['role:patient'])->group(function () {
     Route::get('/PanelUzytkownika', [PatientController::class, 'index']);
     Route::post('/PanelUzytkownika/aplikuj', [PatientController::class, 'applyToBeDoctor']);
@@ -71,7 +66,6 @@ Route::middleware(['role:patient'])->group(function () {
     Route::get('/DiagnozaZalecenia', [PatientController::class, 'diagnosis']);
 });
 
-// Shared visits route switcher (requires session authentication)
 Route::get('/ListaWizyt', function () {
     $user = Auth::user();
     if ($user->isDoctor()) {

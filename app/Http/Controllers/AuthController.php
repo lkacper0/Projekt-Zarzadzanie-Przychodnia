@@ -60,11 +60,9 @@ class AuthController extends Controller
             'password' => $request->password,
         ];
 
-        // Attempt authentication
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
             $user = Auth::user();
 
-            // Check if user is active
             if (!$user->is_active) {
                 Auth::logout();
                 $request->session()->invalidate();
@@ -76,10 +74,8 @@ class AuthController extends Controller
                 ], 403);
             }
 
-            // Regenerate session to prevent session fixation
             $request->session()->regenerate();
 
-            // Determine redirect URL
             $redirectUrl = $this->getRedirectUrlForUser($user);
 
             return response()->json([
@@ -127,7 +123,6 @@ class AuthController extends Controller
             ], 422);
         }
 
-        // Create user as patient
         $user = User::create([
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,

@@ -17,7 +17,6 @@ class AuthTest extends TestCase
     {
         parent::setUp();
 
-        // Seed some specializations
         Specialization::create(['name' => 'Kardiologia']);
         Specialization::create(['name' => 'Pediatria']);
     }
@@ -113,7 +112,7 @@ class AuthTest extends TestCase
             'last_name' => 'Kandydatka',
             'email' => 'kandydat@example.com',
             'password_hash' => Hash::make('password'),
-            'role' => 'patient', // role is patient
+            'role' => 'patient',
             'pesel' => '90010112348',
             'is_active' => true,
         ]);
@@ -121,7 +120,7 @@ class AuthTest extends TestCase
         DoctorProfile::create([
             'user_id' => $candidate->id,
             'bio' => 'Bio',
-            'is_accepted' => false, // pending approval
+            'is_accepted' => false,
         ]);
 
         $response = $this->postJson('/api/auth/login', [
@@ -132,7 +131,7 @@ class AuthTest extends TestCase
         $response->assertStatus(200)
             ->assertJson([
                 'success' => true,
-                'redirect' => '/PanelUzytkownika' // redirected to patient panel
+                'redirect' => '/PanelUzytkownika'
             ]);
     }
 
@@ -214,7 +213,6 @@ class AuthTest extends TestCase
 
         $spec = Specialization::where('name', 'Pediatria')->first();
 
-        // Login the user to simulate session
         $this->actingAs($patient);
 
         $response = $this->postJson('/PanelUzytkownika/aplikuj', [
@@ -287,13 +285,11 @@ class AuthTest extends TestCase
 
         $this->actingAs($patient);
 
-        // Filter by specialization
         $response = $this->get('/Lekarze?specialization=' . $specKardio->id);
         $response->assertStatus(200);
         $response->assertSee('dr Kamil Kardiolog');
         $response->assertDontSee('dr Patryk Pediatra');
 
-        // Filter by text search
         $response = $this->get('/Lekarze?search=dzieci');
         $response->assertStatus(200);
         $response->assertSee('dr Patryk Pediatra');

@@ -71,7 +71,6 @@ class PatientController extends Controller
 
         $user = Auth::user();
 
-        // Check if application already exists
         $exists = DoctorProfile::where('user_id', $user->id)->exists();
         if ($exists) {
             return response()->json([
@@ -80,7 +79,6 @@ class PatientController extends Controller
             ], 400);
         }
 
-        // Create profile in pending state
         $profile = DoctorProfile::create([
             'user_id' => $user->id,
             'bio' => $request->bio,
@@ -124,7 +122,6 @@ class PatientController extends Controller
         $query = DoctorProfile::where('is_accepted', true)
             ->with(['user', 'specializations', 'tags']);
 
-        // Filter by search query
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('bio', 'like', '%' . $search . '%')
@@ -135,21 +132,18 @@ class PatientController extends Controller
             });
         }
 
-        // Filter by specialization
         if ($specializationId) {
             $query->whereHas('specializations', function ($q) use ($specializationId) {
                 $q->where('specialization_id', $specializationId);
             });
         }
 
-        // Filter by tag
         if ($tagId) {
             $query->whereHas('tags', function ($q) use ($tagId) {
                 $q->where('tag_id', $tagId);
             });
         }
 
-        // Apply Sorting
         if ($sort === 'rating') {
             $query->orderBy('avg_rating', 'desc');
         } elseif ($sort === 'specialization') {
@@ -160,7 +154,6 @@ class PatientController extends Controller
                     ->limit(1)
             );
         } else {
-            // alphabetical by last name
             $query->orderBy(
                 \App\Models\User::select('last_name')
                     ->whereColumn('users.id', 'doctor_profiles.user_id')

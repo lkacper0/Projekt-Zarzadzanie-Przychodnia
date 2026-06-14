@@ -11,7 +11,6 @@
     <h1 class="panel-title">Moje Dane</h1>
 
     <div class="panel-grid">
-        <!-- Profile Card -->
         <div class="panel-card profile-card" style="height: fit-content;">
             <div class="avatar-placeholder">
                 {{ strtoupper(substr($user->first_name, 0, 1)) }}{{ strtoupper(substr($user->last_name, 0, 1)) }}
@@ -37,7 +36,6 @@
             <a href="{{ url('/PanelUzytkownika/edycja') }}" class="btn-auth" style="display:inline-block; width:auto; padding:8px 16px; font-size:13px; margin-top:10px; background:linear-gradient(135deg, #64748b 0%, #475569 100%); box-shadow:none;">Edytuj Dane</a>
         </div>
 
-        <!-- Main Dashboard Actions -->
         <div>
             <div class="panel-card actions-card" style="margin-bottom: 30px;">
                 <h2>Szybki dostęp</h2>
@@ -61,7 +59,6 @@
                 </div>
             </div>
 
-            <!-- Doctor Application Section -->
             <div class="panel-card">
                 <h2>Dołącz do zespołu ProHealth</h2>
                 
@@ -134,7 +131,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const btnText = document.getElementById('btn-text');
     const alertContainer = document.getElementById('alert-container');
 
-    // Hide spinner initially
     btnSpinner.style.display = 'none';
 
     form.addEventListener('submit', async function(e) {
@@ -170,7 +166,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 alertContainer.innerHTML = `<div style="background-color:#dcfce7; color:#14532d; padding:15px; border-radius:10px; margin-bottom:20px; font-weight:500;">${result.message}</div>`;
                 form.reset();
                 
-                // Reload page after short delay to show the pending card state
                 setTimeout(() => {
                     window.location.reload();
                 }, 1500);

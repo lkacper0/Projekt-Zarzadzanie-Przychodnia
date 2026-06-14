@@ -5,7 +5,6 @@
 @push('styles')
     <link rel="stylesheet" href="{{ asset('css/patient/panel.css') }}">
     <style>
-        /* Custom styles for search and filters */
         .filter-form {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) auto;
@@ -118,7 +117,6 @@
             -webkit-box-orient: vertical;
             overflow: hidden;
         }
-        /* Pagination Styling */
         .pagination-wrapper {
             display: flex;
             justify-content: center;
@@ -165,18 +163,14 @@
 @section('content')
 <div class="patient-container">
     <h1 class="panel-title">Wyszukiwanie Lekarzy</h1>
-
-    <!-- Filters Section -->
     <div class="panel-card" style="margin-bottom: 40px; padding: 25px;">
         <form method="GET" action="{{ url('/Lekarze') }}">
             <div class="filter-form">
-                <!-- Search Query -->
                 <div class="form-group" style="margin-bottom: 0;">
                     <label for="search" style="font-weight: 600; color: #475569; margin-bottom: 6px; display: block; font-size: 13px;">Szukaj (Imię, Nazwisko, Bio)</label>
                     <input type="text" name="search" id="search" class="form-control" style="padding: 11px;" value="{{ $search }}" placeholder="Wpisz np. kowalski...">
                 </div>
 
-                <!-- Specialization -->
                 <div class="form-group" style="margin-bottom: 0;">
                     <label for="specialization" style="font-weight: 600; color: #475569; margin-bottom: 6px; display: block; font-size: 13px;">Specjalizacja</label>
                     <select name="specialization" id="specialization" class="form-control" style="padding: 11px;">
@@ -187,7 +181,6 @@
                     </select>
                 </div>
 
-                <!-- Tags -->
                 <div class="form-group" style="margin-bottom: 0;">
                     <label for="tag" style="font-weight: 600; color: #475569; margin-bottom: 6px; display: block; font-size: 13px;">Tagi / Umowa</label>
                     <select name="tag" id="tag" class="form-control" style="padding: 11px;">
@@ -198,7 +191,6 @@
                     </select>
                 </div>
 
-                <!-- Sorting -->
                 <div class="form-group" style="margin-bottom: 0;">
                     <label for="sort" style="font-weight: 600; color: #475569; margin-bottom: 6px; display: block; font-size: 13px;">Sortowanie</label>
                     <select name="sort" id="sort" class="form-control" style="padding: 11px;">
@@ -208,7 +200,6 @@
                     </select>
                 </div>
 
-                <!-- Submit / Reset Buttons -->
                 <div style="display: flex; gap: 10px;">
                     <button type="submit" class="btn-auth" style="padding: 11px 25px; box-shadow: none; width: auto; white-space: nowrap;">Filtruj</button>
                     <a href="{{ url('/Lekarze') }}" class="btn-auth" style="padding: 11px 20px; box-shadow: none; width: auto; background: #94a3b8; text-decoration: none; display: flex; align-items: center; justify-content: center;">Reset</a>
@@ -216,8 +207,6 @@
             </div>
         </form>
     </div>
-
-    <!-- Doctors Listing -->
     @if($doctors && $doctors->count() > 0)
         <div class="doctors-grid">
             @foreach($doctors as $doctor)
@@ -242,7 +231,6 @@
                             </div>
                         </div>
 
-                        <!-- Specializations & Tags -->
                         <div class="doc-badges">
                             @foreach($doctor->specializations as $spec)
                                 <span class="badge-spec">{{ $spec->name }}</span>
@@ -262,7 +250,6 @@
             @endforeach
         </div>
 
-        <!-- Pagination -->
         <div class="pagination-wrapper">
             {{ $doctors->links('pagination::bootstrap-4') }}
         </div>

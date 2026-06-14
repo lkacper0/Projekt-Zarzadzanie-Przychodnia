@@ -10,7 +10,6 @@
 <div class="patient-container">
     <h1 class="panel-title">Moje Wizyty</h1>
 
-    <!-- Upcoming Appointments Section -->
     <div class="panel-card" style="margin-bottom: 40px;">
         <h2 style="font-family: 'Outfit', sans-serif; color: #003366; font-size: 22px; margin-top: 0; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
             <span>📅</span> Nadchodzące Wizyty
@@ -77,7 +76,6 @@
         @endif
     </div>
 
-    <!-- Booking History Section -->
     <div class="panel-card">
         <h2 style="font-family: 'Outfit', sans-serif; color: #003366; font-size: 22px; margin-top: 0; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
             <span>🕰️</span> Historia Wizyt

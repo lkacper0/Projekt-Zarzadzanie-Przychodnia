@@ -27,7 +27,6 @@ class RoleMiddleware
 
         $user = Auth::user();
 
-        // Check if user account is active
         if (!$user->is_active) {
             Auth::logout();
             $request->session()->invalidate();
@@ -41,7 +40,6 @@ class RoleMiddleware
 
 
 
-        // Check if role is allowed
         if (!in_array($user->role, $roles)) {
             if ($request->expectsJson()) {
                 return response()->json(['message' => 'Unauthorized.'], 403);
