@@ -22,9 +22,9 @@
         <form action="{{ url('/admin') }}" method="GET" class="search-form">
 
             <input type="text" name="search" value="{{ $search ?? '' }}" placeholder="Szukaj po imieniu, nazwisku lub e-mailu..." class="search-input">
-            
+
             <button type="submit" class="btn btn-primary">Szukaj</button>
-            
+
             @if($search)
                 <a href="{{ url('/admin') }}" class="btn btn-secondary">Wyczyść</a>
 
@@ -39,7 +39,7 @@
         <div class="alert-success">
 
             {{ session('success') }}
-            
+
         </div>
     @endif
 
@@ -105,7 +105,7 @@
             </tr>
 
             @endforeach
-            
+
         </tbody>
     </table>
 </div>

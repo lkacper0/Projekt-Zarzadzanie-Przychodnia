@@ -60,7 +60,11 @@
                     <form action="{{ url('/admin/doctor-applications/'.$app->id.'/approve') }}" method="POST" class="m-0">
                         @csrf
                         <button type="submit" class="btn-approve">Akceptuj</button>
-
+                    </form>
+                    <form action="/admin/doctor-applications/{{ $app->id }}" method="POST" onsubmit="return confirm('Czy na pewno chcesz odrzucic to zgłoszenie?');">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn-danger">Odrzuć zgłoszenie</button>
                     </form>
                 </td>
             </tr>

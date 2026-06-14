@@ -127,10 +127,11 @@ class AdminController extends Controller
 
     public function reviews()
     {
+
         $reviews = Review::with(['patient', 'doctor.user'])->orderBy('id', 'desc')->get();
         return view('admin.reviews', compact('reviews'));
     }
-    
+
 
 
     public function destroyReview($id)
@@ -158,7 +159,7 @@ class AdminController extends Controller
         $profile->save();
 
 
-        
+
         if ($profile->user) {
             $profile->user->role = 'doctor';
             $profile->user->save();
@@ -166,4 +167,13 @@ class AdminController extends Controller
 
         return redirect('/admin/doctor-applications')->with('success', 'Zgłoszenie lekarza zostało zaakceptowane!');
     }
+
+    public function destroyDoctorApplication($id){
+        $profile = DoctorProfile::findOrFail($id);
+        $profile->delete();
+
+        return redirect('/admin/doctor-applications')->with('success', 'Zgłoszenie lekarza zostało odrzucone!');
+    }
+
+
 }
