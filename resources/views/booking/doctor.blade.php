@@ -13,7 +13,7 @@
 
             <div class="doctor-avatar doctor-avatar-lg">
                 @if($doctor->profile_photo)
-                    <img src="{{ asset($doctor->profile_photo) }}" alt="Zdjęcie lekarza">
+                    <img src="{{ asset($doctor->profile_photo) }}" alt="Zdjęcie lekarza" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">
                 @else
                     <span>{{ strtoupper(substr($doctor->user->first_name,0,1)) }}{{ strtoupper(substr($doctor->user->last_name,0,1)) }}</span>
                 @endif
@@ -41,7 +41,7 @@
         <label for="service_select"><strong>Usługa:</strong></label>
         <select id="service_select" class="form-control" style="max-width:320px;">
             @foreach($doctor->services as $svc)
-                <option value="{{ $svc->id }}">
+                <option value="{{ $svc->id }}" data-duration="{{ $svc->duration_minutes }}">
                     {{ $svc->name }} – {{ number_format($svc->price, 2) }} zł ({{ $svc->duration_minutes }} min)
                 </option>
             @endforeach
@@ -66,11 +66,14 @@
 
             <div class="slots-grid">
                 @foreach($daySlots as $slot)
+                @php $slotDuration = $slot->start_time->diffInMinutes($slot->end_time); @endphp
                 <div class="slot-tile slot-free {{ $doctor->services->isNotEmpty() ? 'slot-clickable' : 'slot-disabled' }}"
                      data-slot-id="{{ $slot->id }}"
                      data-time="{{ $slot->start_time->format('H:i') }}"
-                     data-date="{{ $slot->start_time->format('d.m.Y') }}">
+                     data-date="{{ $slot->start_time->format('d.m.Y') }}"
+                     data-slot-duration="{{ $slotDuration }}">
                     <span class="slot-time">{{ $slot->start_time->format('H:i') }}</span>
+                    <span class="slot-duration-label">{{ $slotDuration }} min</span>
                 </div>
                 @endforeach
             </div>
@@ -100,31 +103,57 @@
 </div>
 
 <script>
-    const tiles = document.querySelectorAll('.slot-clickable');
+    const tiles = document.querySelectorAll('.slot-tile.slot-free');
     const modal = document.getElementById('booking-modal');
     const form  = document.getElementById('booking-form');
     const serviceSelect = document.getElementById('service_select');
 
-    tiles.forEach(tile => {
-        tile.addEventListener('click', () => {
-            if (!serviceSelect) {
-                return;
+    function getSelectedServiceDuration() {
+        if (!serviceSelect) return 0;
+        const opt = serviceSelect.options[serviceSelect.selectedIndex];
+        return parseInt(opt?.getAttribute('data-duration') || '0', 10);
+    }
+
+    function updateSlotAvailability() {
+        const svcDuration = getSelectedServiceDuration();
+        tiles.forEach(tile => {
+            const slotDuration = parseInt(tile.dataset.slotDuration || '0', 10);
+            if (svcDuration > slotDuration) {
+                tile.classList.remove('slot-clickable');
+                tile.classList.add('slot-too-short');
+                tile.title = `Wymagane ${svcDuration} min, okienko ma ${slotDuration} min`;
+            } else {
+                tile.classList.add('slot-clickable');
+                tile.classList.remove('slot-too-short');
+                tile.title = '';
             }
-
-            const slotId   = tile.dataset.slotId;
-            const time     = tile.dataset.time;
-            const date     = tile.dataset.date;
-            const svcId    = serviceSelect.value;
-            const svcText  = serviceSelect.options[serviceSelect.selectedIndex]?.text ?? '';
-
-            document.getElementById('modal-info').textContent =
-                `📅 ${date}  🕐 ${time}  •  ${svcText}`;
-            document.getElementById('modal-service-id').value = svcId;
-            form.action = `/Rezerwacja/slot/${slotId}`;
-
-            modal.style.display = 'flex';
-            tile.classList.add('slot-selected');
         });
+    }
+
+    if (serviceSelect) {
+        serviceSelect.addEventListener('change', updateSlotAvailability);
+        updateSlotAvailability();
+    }
+
+    document.addEventListener('click', (e) => {
+        const tile = e.target.closest('.slot-tile.slot-clickable');
+        if (!tile || !serviceSelect) return;
+        if (tile.classList.contains('slot-too-short')) return;
+
+        const slotId   = tile.dataset.slotId;
+        const time     = tile.dataset.time;
+        const date     = tile.dataset.date;
+        const svcId    = serviceSelect.value;
+        const svcText  = serviceSelect.options[serviceSelect.selectedIndex]?.text ?? '';
+
+        document.getElementById('modal-info').textContent =
+            `📅 ${date}  🕐 ${time}  •  ${svcText}`;
+        document.getElementById('modal-service-id').value = svcId;
+        form.action = `/Rezerwacja/slot/${slotId}`;
+
+        modal.style.display = 'flex';
+        document.querySelectorAll('.slot-selected').forEach(t => t.classList.remove('slot-selected'));
+        tile.classList.add('slot-selected');
     });
 
     function closeModal() {

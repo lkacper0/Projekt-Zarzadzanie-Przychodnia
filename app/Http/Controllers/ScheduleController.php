@@ -102,7 +102,7 @@ class ScheduleController extends Controller
 
         $slots = AvailabilitySlot::where('doctor_id', $doctorId)
             ->where('is_booked', false)
-            ->where('start_time', '>=', Carbon::today())
+            ->where('start_time', '>=', now())
             ->orderBy('start_time')
             ->get()
             ->groupBy(fn($s) => $s->start_time->toDateString());
@@ -130,6 +130,11 @@ class ScheduleController extends Controller
                 $service = Service::where('id', $request->service_id)
                     ->where('doctor_id', $slot->doctor_id)
                     ->firstOrFail();
+
+                $slotDuration = $slot->start_time->diffInMinutes($slot->end_time);
+                if ($service->duration_minutes > $slotDuration) {
+                    throw new \RuntimeException("Usługa trwa {$service->duration_minutes} min, ale okienko ma tylko {$slotDuration} min.");
+                }
 
                 $slot->is_booked = true;
                 $slot->save();

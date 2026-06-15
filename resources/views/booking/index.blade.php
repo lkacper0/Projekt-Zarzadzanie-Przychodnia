@@ -20,7 +20,7 @@
             <a href="{{ url('/Rezerwacja/lekarz/'.$doctor->id) }}" class="doctor-card">
                 <div class="doctor-avatar">
                     @if($doctor->profile_photo)
-                        <img src="{{ asset($doctor->profile_photo) }}" alt="Zdjęcie lekarza">
+                        <img src="{{ asset($doctor->profile_photo) }}" alt="Zdjęcie lekarza" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">
                     @else
                         <span>{{ strtoupper(substr($doctor->user->first_name,0,1)) }}{{ strtoupper(substr($doctor->user->last_name,0,1)) }}</span>
                     @endif
