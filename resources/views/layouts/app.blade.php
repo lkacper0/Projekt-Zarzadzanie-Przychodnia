@@ -12,10 +12,6 @@
 </head>
 <body>
     @php
-        $isPanel = request()->is(
-            'PanelUzytkownika', 'Rezerwacja', 'DiagnozaZalecenia',
-            'PanelLekarza', 'ListaWizyt', 'GodzinyPracy', 'Kartoteka', 'HistoriaPacjenta'
-        );
         $user = auth()->user();
     @endphp
 
@@ -27,7 +23,7 @@
         </div>
 
         <div id="zakladki">
-            @if($isPanel && $user)
+            @if($user)
                 @if($user->isDoctor())
                     <a href="{{ url('/PanelLekarza') }}">Moje Dane</a>
                     <a href="{{ url('/ListaWizyt') }}">Lista Wizyt</a>

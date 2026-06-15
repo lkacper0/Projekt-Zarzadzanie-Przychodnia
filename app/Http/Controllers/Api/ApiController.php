@@ -136,4 +136,61 @@ class ApiController extends Controller
             'message' => 'Treść strony głównej została zaktualizowana!'
         ]);
     }
+
+    public function getAboutData()
+    {
+        $about = PageContent::where('key', 'about')->first();
+        $content = $about ? $about->value : '';
+
+        return response()->json([
+            'success' => true,
+            'content' => $content
+        ]);
+    }
+
+    public function updateAboutData(Request $request)
+    {
+        $request->validate([
+            'content' => 'required|string'
+        ]);
+
+        PageContent::updateOrCreate(
+            ['key' => 'about'],
+            ['value' => $request->content]
+        );
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Treść strony O nas została zaktualizowana!'
+        ]);
+    }
+
+    public function getContactData()
+    {
+        $contact = PageContent::where('key', 'contact')->first();
+        $content = $contact ? $contact->value : '';
+
+        return response()->json([
+            'success' => true,
+            'content' => $content
+        ]);
+    }
+
+    public function updateContactData(Request $request)
+    {
+        $request->validate([
+            'content' => 'required|string'
+        ]);
+
+        PageContent::updateOrCreate(
+            ['key' => 'contact'],
+            ['value' => $request->content]
+        );
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Treść strony Kontakt została zaktualizowana!'
+        ]);
+    }
 }
+

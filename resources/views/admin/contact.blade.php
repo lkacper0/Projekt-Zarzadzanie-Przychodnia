@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Edycja Strony Głównej - Admin')
+@section('title', 'Edycja Kontakt - Admin')
 
 @section('content')
 <link rel="stylesheet" href="{{ asset('css/admin/admin.css') }}">
@@ -13,9 +13,9 @@
         <a href="{{ url('/admin') }}" class="nav-btn">Użytkownicy</a>
         <a href="{{ url('/admin/reviews') }}" class="nav-btn">Opinie</a>
         <a href="{{ url('/admin/doctor-applications') }}" class="nav-btn">Zgłoszenia Lekarzy</a>
-        <a href="{{ url('/admin/homepage') }}" class="nav-btn active">Strona Główna</a>
+        <a href="{{ url('/admin/homepage') }}" class="nav-btn">Strona Główna</a>
         <a href="{{ url('/admin/about') }}" class="nav-btn">O nas</a>
-        <a href="{{ url('/admin/contact') }}" class="nav-btn">Kontakt</a>
+        <a href="{{ url('/admin/contact') }}" class="nav-btn active">Kontakt</a>
     </div>
 
     <div class="admin-toolbar" style="margin-bottom: 25px;">
@@ -24,7 +24,7 @@
                 <label style="font-weight: bold; color: #003366;">Importuj treść z pliku HTML:</label>
                 <input type="file" id="html-file-input" accept=".html,.txt" style="padding: 5px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px;">
             </div>
-            <button id="save-homepage-btn" class="btn btn-success" style="padding: 10px 25px;">Zapisz Zmiany</button>
+            <button id="save-btn" class="btn btn-success" style="padding: 10px 25px;">Zapisz Zmiany</button>
         </div>
     </div>
 
@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     });
 
     const alertBox = document.getElementById('alert-box');
-    const saveBtn = document.getElementById('save-homepage-btn');
+    const saveBtn = document.getElementById('save-btn');
     const fileInput = document.getElementById('html-file-input');
 
     function showAlert(message, isSuccess) {
@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
 
     try {
-        const response = await fetch('/api/homepage');
+        const response = await fetch('/api/contact');
         const data = await response.json();
         if (response.ok && data.success) {
             quill.root.innerHTML = data.content;
@@ -99,7 +99,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         saveBtn.textContent = 'Zapisywanie...';
 
         try {
-            const response = await fetch('/api/admin/homepage', {
+            const response = await fetch('/api/admin/contact', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

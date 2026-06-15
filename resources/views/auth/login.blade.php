@@ -72,12 +72,12 @@ document.addEventListener('DOMContentLoaded', function() {
     form.addEventListener('submit', async function(e) {
         e.preventDefault();
         
-        // Reset states
+
         alertContainer.innerHTML = '';
         document.querySelectorAll('.error-feedback').forEach(el => el.textContent = '');
         document.querySelectorAll('.form-control').forEach(el => el.classList.remove('is-invalid'));
         
-        // Button loading state
+
         submitBtn.disabled = true;
         btnSpinner.style.display = 'inline-block';
         btnText.textContent = 'Logowanie...';
@@ -106,21 +106,21 @@ document.addEventListener('DOMContentLoaded', function() {
             const result = await response.json();
 
             if (response.ok && result.success) {
-                // Success alert
+
                 alertContainer.innerHTML = `<div class="alert alert-success">${result.message}</div>`;
                 
-                // Redirect after success message is readable
+
                 setTimeout(() => {
                     window.location.href = result.redirect;
                 }, 800);
             } else {
-                // Error state back to default button
+
                 submitBtn.disabled = false;
                 btnSpinner.style.display = 'none';
                 btnText.textContent = 'Zaloguj się';
 
                 if (response.status === 422 && result.errors) {
-                    // Validation errors
+
                     Object.keys(result.errors).forEach(field => {
                         const input = document.getElementById(field);
                         if (input) input.classList.add('is-invalid');
@@ -129,7 +129,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         if (feedback) feedback.textContent = result.errors[field][0];
                     });
                 } else {
-                    // Global alert error (credentials/blocked account)
+
                     const errMsg = result.message || 'Wystąpił błąd podczas logowania.';
                     alertContainer.innerHTML = `<div class="alert alert-danger">${errMsg}</div>`;
                 }

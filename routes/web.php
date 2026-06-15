@@ -11,8 +11,12 @@ Route::get('/', function () {
     return view('glowna');
 });
 
-Route::get('/o-nas', function () {
+Route::get('/onas', function () {
     return view('about');
+});
+
+Route::get('/kontakt', function () {
+    return view('kontakt');
 });
 
 Route::middleware('guest')->group(function () {
@@ -36,6 +40,8 @@ Route::middleware(['role:admin'])->group(function () {
     Route::delete('/admin/doctor-applications/{id}', [AdminController::class, 'destroyDoctorApplication']);
 
     Route::get('/admin/homepage', [AdminController::class, 'homepage']);
+    Route::get('/admin/about', [AdminController::class, 'aboutPage']);
+    Route::get('/admin/contact', [AdminController::class, 'contactPage']);
 
     Route::get('/admin/{id}/edit', [AdminController::class, 'edit']);
     Route::put('/admin/{id}', [AdminController::class, 'update']);

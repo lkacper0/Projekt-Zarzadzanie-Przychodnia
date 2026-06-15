@@ -179,4 +179,14 @@ class AdminController extends Controller
     {
         return view('admin.homepage');
     }
+
+    public function aboutPage()
+    {
+        return view('admin.about');
+    }
+
+    public function contactPage()
+    {
+        return view('admin.contact');
+    }
 }
