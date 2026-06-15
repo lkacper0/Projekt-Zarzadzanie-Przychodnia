@@ -35,6 +35,8 @@ Route::middleware(['role:admin'])->group(function () {
     Route::post('/admin/doctor-applications/{id}/approve', [AdminController::class, 'approveDoctor']);
     Route::delete('/admin/doctor-applications/{id}', [AdminController::class, 'destroyDoctorApplication']);
 
+    Route::get('/admin/homepage', [AdminController::class, 'homepage']);
+
     Route::get('/admin/{id}/edit', [AdminController::class, 'edit']);
     Route::put('/admin/{id}', [AdminController::class, 'update']);
     Route::delete('/admin/{id}', [AdminController::class, 'destroy']);

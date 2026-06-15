@@ -175,5 +175,8 @@ class AdminController extends Controller
         return redirect('/admin/doctor-applications')->with('success', 'Zgłoszenie lekarza zostało odrzucone!');
     }
 
-
+    public function homepage()
+    {
+        return view('admin.homepage');
+    }
 }

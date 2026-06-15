@@ -11,10 +11,10 @@
     <h1 class="admin-title">Panel Administratora</h1>
 
     <div class="admin-nav">
-
         <a href="{{ url('/admin') }}" class="nav-btn active">Użytkownicy</a>
         <a href="{{ url('/admin/reviews') }}" class="nav-btn">Opinie</a>
         <a href="{{ url('/admin/doctor-applications') }}" class="nav-btn">Zgłoszenia Lekarzy</a>
+        <a href="{{ url('/admin/homepage') }}" class="nav-btn">Edycja Strony Głównej</a>
     </div>
 
     <div class="admin-toolbar">
