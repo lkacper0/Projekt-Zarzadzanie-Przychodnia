@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Harmonogram - Panel Lekarza')
+@section('title', 'Godziny Pracy - Panel Lekarza')
 
 @section('content')
 <link rel="stylesheet" href="{{ asset('css/doctor/panel.css') }}">
@@ -8,13 +8,12 @@
 
 <div class="doc-container">
 
-    <h1 class="doc-title">Panel Lekarza</h1>
+    <h1 class="doc-title">Godziny Pracy</h1>
 
     <div class="doc-nav">
-        
         <a href="{{ url('/PanelLekarza') }}" class="nav-btn">Mój Profil</a>
         <a href="{{ url('/PanelLekarza/uslugi') }}" class="nav-btn">Usługi &amp; Cennik</a>
-        <a href="{{ url('/PanelLekarza/harmonogram') }}" class="nav-btn active">Harmonogram</a>
+        <a href="{{ url('/GodzinyPracy') }}" class="nav-btn active">Godziny Pracy</a>
     </div>
 
     @if(session('success'))
@@ -24,10 +23,29 @@
         <div class="alert-error">{{ session('error') }}</div>
     @endif
 
+    <div class="booking-doctor-header" style="margin-bottom: 24px;">
+        <div class="booking-doctor-info">
+            <div class="doctor-avatar doctor-avatar-lg">
+                @if($profile->profile_photo)
+                    <img src="{{ asset($profile->profile_photo) }}" alt="Zdjęcie lekarza">
+                @else
+                    <span>{{ strtoupper(substr($profile->user->first_name, 0, 1)) }}{{ strtoupper(substr($profile->user->last_name, 0, 1)) }}</span>
+                @endif
+            </div>
+            <div>
+                <h2 class="booking-title" style="margin-bottom: 4px;">
+                    dr {{ $profile->user->first_name }} {{ $profile->user->last_name }}
+                </h2>
+                <p class="booking-subtitle">Ustaw dni i godziny, w których przyjmujesz pacjentów. Wygenerowane terminy będą widoczne w rezerwacji.</p>
+            </div>
+        </div>
+    </div>
+
     <div class="sch-form-card">
         <h2 class="card-title">Dodaj dostępność</h2>
+        <p style="color: #64748b; margin-top: -8px; margin-bottom: 20px;">Wybierz datę, przedział godzinowy i długość pojedynczego slotu wizyty.</p>
 
-        <form action="{{ url('/PanelLekarza/harmonogram/generuj') }}" method="POST" class="sch-form">
+        <form action="{{ url('/GodzinyPracy/generuj') }}" method="POST" class="sch-form">
             @csrf
 
             <div class="sch-form-row">
@@ -52,7 +70,6 @@
 
                 <div class="form-group">
                     <label for="slot_minutes">Slot (min)</label>
-
                     <select name="slot_minutes" id="slot_minutes" class="form-control">
                         <option value="10">10 min</option>
                         <option value="15" selected>15 min</option>
@@ -60,23 +77,22 @@
                         <option value="30">30 min</option>
                         <option value="45">45 min</option>
                         <option value="60">60 min</option>
-
                     </select>
                 </div>
 
                 <div class="form-group form-group-btn">
-
                     <label>&nbsp;</label>
                     <button type="submit" class="btn btn-primary">Generuj sloty</button>
-
                 </div>
             </div>
         </form>
     </div>
 
+    <h2 class="card-title" style="margin-bottom: 16px;">Twój grafik</h2>
+
     @if($slots->isEmpty())
-        <div class="empty-state" style="margin-top:30px;">
-            <p>Brak slotów. Użyj formularza powyżej, żeby dodać dostępność.</p>
+        <div class="empty-state" style="margin-top: 10px;">
+            <p>Brak zdefiniowanych godzin pracy. Użyj formularza powyżej, aby dodać pierwsze terminy.</p>
         </div>
     @else
         @foreach($slots as $date => $daySlots)
@@ -95,13 +111,10 @@
                                     {{ $slot->appointment->patient->first_name }}
                                     {{ $slot->appointment->patient->last_name }}
                                 </span>
-
-
                             @elseif(!$slot->is_booked)
-                                <form action="{{ url('/PanelLekarza/harmonogram/slot/'.$slot->id.'/usun') }}"
+                                <form action="{{ url('/GodzinyPracy/slot/'.$slot->id.'/usun') }}"
                                       method="POST"
                                       onsubmit="return confirm('Usunąć ten slot?');">
-
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="slot-delete-btn" title="Usuń">✕</button>

@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Auth;
 
 class DoctorController extends Controller
 {
-
     public function panel()
     {
         $user = Auth::user();
@@ -18,7 +17,6 @@ class DoctorController extends Controller
 
         return view('doctor.panel', compact('user', 'profile'));
     }
-
 
     public function updateProfile(Request $request)
     {
@@ -44,7 +42,6 @@ class DoctorController extends Controller
         return redirect('/PanelLekarza')->with('success', 'Profil został zaktualizowany!');
     }
 
-
     public function services()
     {
         $user = Auth::user();
@@ -54,12 +51,10 @@ class DoctorController extends Controller
         return view('doctor.services', compact('profile', 'services'));
     }
 
-
     public function createService()
     {
         return view('doctor.service_create');
     }
-
 
     public function storeService(Request $request)
     {
@@ -84,7 +79,6 @@ class DoctorController extends Controller
         return redirect('/PanelLekarza/uslugi')->with('success', 'Usługa została dodana!');
     }
 
-
     public function editService($id)
     {
         $user = Auth::user();
@@ -93,7 +87,6 @@ class DoctorController extends Controller
 
         return view('doctor.service_edit', compact('service'));
     }
-
 
     public function updateService(Request $request, $id)
     {
@@ -117,7 +110,6 @@ class DoctorController extends Controller
         return redirect('/PanelLekarza/uslugi')->with('success', 'Usługa zaktualizowana!');
     }
 
-
     public function destroyService($id)
     {
         $user = Auth::user();
@@ -128,9 +120,6 @@ class DoctorController extends Controller
         return redirect('/PanelLekarza/uslugi')->with('success', 'Usługa usunięta!');
     }
 
-    /**
-     * Display list of appointments/visits for the doctor.
-     */
     public function visits()
     {
         $user = Auth::user();
@@ -145,9 +134,6 @@ class DoctorController extends Controller
         return view('doctor.visits', compact('profile', 'appointments'));
     }
 
-    /**
-     * Display working hours/availability slots.
-     */
     public function workingHours()
     {
         $user = Auth::user();
@@ -159,9 +145,6 @@ class DoctorController extends Controller
         return view('doctor.working_hours', compact('profile', 'slots'));
     }
 
-    /**
-     * Display patient records list.
-     */
     public function records()
     {
         $user = Auth::user();
@@ -175,9 +158,6 @@ class DoctorController extends Controller
         return view('doctor.records', compact('profile', 'patients'));
     }
 
-    /**
-     * Display medical notes / history of patients.
-     */
     public function history()
     {
         $user = Auth::user();
@@ -194,4 +174,3 @@ class DoctorController extends Controller
         return view('doctor.history', compact('profile', 'appointments'));
     }
 }
-

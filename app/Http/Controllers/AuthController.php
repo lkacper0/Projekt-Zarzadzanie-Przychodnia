@@ -12,9 +12,6 @@ use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
-    /**
-     * Show the login form.
-     */
     public function showLogin()
     {
         if (Auth::check()) {
@@ -23,9 +20,6 @@ class AuthController extends Controller
         return view('auth.login');
     }
 
-    /**
-     * Show the registration form.
-     */
     public function showRegister()
     {
         if (Auth::check()) {
@@ -34,9 +28,6 @@ class AuthController extends Controller
         return view('auth.register');
     }
 
-    /**
-     * Handle authentication API.
-     */
     public function login(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -91,9 +82,6 @@ class AuthController extends Controller
         ], 401);
     }
 
-    /**
-     * Handle registration API.
-     */
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -142,9 +130,6 @@ class AuthController extends Controller
         ]);
     }
 
-    /**
-     * Handle user logout.
-     */
     public function logout(Request $request)
     {
         Auth::logout();
@@ -162,9 +147,6 @@ class AuthController extends Controller
         return redirect('/')->with('success', 'Zostałeś wylogowany.');
     }
 
-    /**
-     * Show pending page for doctor candidates.
-     */
     public function showPending()
     {
         $user = Auth::user();
@@ -183,9 +165,6 @@ class AuthController extends Controller
         return view('auth.pending');
     }
 
-    /**
-     * Helper to get redirect URL.
-     */
     private function getRedirectUrlForUser($user)
     {
         if ($user->role === 'admin') {
@@ -199,9 +178,6 @@ class AuthController extends Controller
         return '/PanelUzytkownika';
     }
 
-    /**
-     * Helper to redirect logged-in user.
-     */
     private function redirectUserBasedOnRole($user)
     {
         return redirect($this->getRedirectUrlForUser($user));

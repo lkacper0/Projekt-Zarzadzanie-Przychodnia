@@ -78,6 +78,11 @@
     cursor: pointer;
 }
 
+.slot-disabled {
+    cursor: not-allowed;
+    opacity: 0.65;
+}
+
 .slot-clickable:hover {
     transform: translateY(-3px);
     box-shadow: 0 6px 16px rgba(56, 161, 105, 0.35);

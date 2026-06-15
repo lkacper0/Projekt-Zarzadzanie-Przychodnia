@@ -47,6 +47,10 @@
             @endforeach
         </select>
     </div>
+    @else
+        <div class="alert-error" style="margin-top:20px;">
+            Ten lekarz nie ma jeszcze zdefiniowanych usług. Rezerwacja jest tymczasowo niedostępna.
+        </div>
     @endif
 
     @if($slots->isEmpty())
@@ -62,7 +66,7 @@
 
             <div class="slots-grid">
                 @foreach($daySlots as $slot)
-                <div class="slot-tile slot-free slot-clickable"
+                <div class="slot-tile slot-free {{ $doctor->services->isNotEmpty() ? 'slot-clickable' : 'slot-disabled' }}"
                      data-slot-id="{{ $slot->id }}"
                      data-time="{{ $slot->start_time->format('H:i') }}"
                      data-date="{{ $slot->start_time->format('d.m.Y') }}">
@@ -85,6 +89,7 @@
         <form id="booking-form" method="POST" action="">
             @csrf
             <input type="hidden" name="service_id" id="modal-service-id">
+            <input type="hidden" name="doctor_id" value="{{ $doctor->id }}">
 
             <div class="modal-actions">
                 <button type="button" class="btn btn-secondary" onclick="closeModal()">Anuluj</button>
@@ -98,14 +103,19 @@
     const tiles = document.querySelectorAll('.slot-clickable');
     const modal = document.getElementById('booking-modal');
     const form  = document.getElementById('booking-form');
+    const serviceSelect = document.getElementById('service_select');
 
     tiles.forEach(tile => {
         tile.addEventListener('click', () => {
+            if (!serviceSelect) {
+                return;
+            }
+
             const slotId   = tile.dataset.slotId;
             const time     = tile.dataset.time;
             const date     = tile.dataset.date;
-            const svcId    = document.getElementById('service_select')?.value ?? '';
-            const svcText  = document.getElementById('service_select')?.options[document.getElementById('service_select').selectedIndex]?.text ?? '';
+            const svcId    = serviceSelect.value;
+            const svcText  = serviceSelect.options[serviceSelect.selectedIndex]?.text ?? '';
 
             document.getElementById('modal-info').textContent =
                 `📅 ${date}  🕐 ${time}  •  ${svcText}`;

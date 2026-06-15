@@ -10,12 +10,9 @@ class DatabaseSeeder extends Seeder
 {
     use WithoutModelEvents;
 
-    /**
-     * Seed the application's database.
-     */
+
     public function run(): void
     {
-        // Seed Specializations
         $specs = [
             'Internista',
             'Kardiologia',
@@ -25,13 +22,12 @@ class DatabaseSeeder extends Seeder
             'Ginekologia',
             'Chirurgia'
         ];
-        
+
         $specializationModels = [];
         foreach ($specs as $specName) {
             $specializationModels[$specName] = \App\Models\Specialization::create(['name' => $specName]);
         }
 
-        // Seed Tags
         $tagsData = ['NFZ', 'Prywatnie', 'Dzieci', 'Teleporada', 'Konsultacja online'];
         $tagModels = [];
         foreach ($tagsData as $tagName) {
@@ -58,14 +54,14 @@ class DatabaseSeeder extends Seeder
             'email' => 'lekarz@example.com',
             'role' => 'doctor',
         ]);
-        
+
         $doctorProfile = \App\Models\DoctorProfile::create([
             'user_id' => $doctorUser->id,
             'bio' => 'Doświadczony lekarz chorób wewnętrznych.',
             'is_accepted' => true,
             'avg_rating' => 4.50,
         ]);
-        // Attach Specialization and Tags
+
         $doctorProfile->specializations()->attach($specializationModels['Internista']->id);
         $doctorProfile->tags()->attach([$tagModels['NFZ']->id, $tagModels['Teleporada']->id]);
 
@@ -82,7 +78,7 @@ class DatabaseSeeder extends Seeder
             'is_accepted' => false,
             'avg_rating' => 0.00,
         ]);
-        // Attach Specialization and Tags
+
         $candidateProfile->specializations()->attach($specializationModels['Pediatria']->id);
         $candidateProfile->tags()->attach([$tagModels['Prywatnie']->id, $tagModels['Dzieci']->id]);
 
@@ -107,6 +103,16 @@ class DatabaseSeeder extends Seeder
             'service_id' => $service->id,
             'status' => 'completed',
         ]);
+
+        for ($day = 2; $day <= 6; $day++) {
+            $start = now()->addDays($day)->setTime(9, 0);
+            \App\Models\AvailabilitySlot::create([
+                'doctor_id' => $doctorProfile->id,
+                'start_time' => $start,
+                'end_time' => $start->copy()->addMinutes(30),
+                'is_booked' => false,
+            ]);
+        }
 
         \App\Models\Review::create([
             'appointment_id' => $appointment->id,

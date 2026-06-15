@@ -73,6 +73,16 @@ class AdminController extends Controller
         $user = User::findOrFail($id);
 
 
+        if ($request->input('role') === 'doctor') {
+            \App\Models\DoctorProfile::firstOrCreate(
+            ['user_id' => $user->id],
+            ['bio' => 'Profil utworzony automatycznie podczas edycji administratora.',
+            'is_accepted' => true,
+            'avg_rating' => 0.00]);
+
+        }
+
+
         $request->validate([
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
@@ -154,18 +164,15 @@ class AdminController extends Controller
 
     public function approveDoctor($id)
     {
-        $profile = DoctorProfile::findOrFail($id);
-        $profile->is_accepted = true;
-        $profile->save();
+    $profile = DoctorProfile::findOrFail($id);
+    $profile->is_accepted = true;
+    $profile->save();
 
+    $user = $profile->user;
+    $user->role = 'doctor';
+    $user->save();
 
-
-        if ($profile->user) {
-            $profile->user->role = 'doctor';
-            $profile->user->save();
-        }
-
-        return redirect('/admin/doctor-applications')->with('success', 'Zgłoszenie lekarza zostało zaakceptowane!');
+    return redirect()->back()->with('success', 'Lekarz został pomyślnie zaakceptowany!');
     }
 
     public function destroyDoctorApplication($id){

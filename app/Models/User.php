@@ -47,8 +47,18 @@ class User extends Authenticatable
         return $this->role === 'doctor';
     }
 
+    public function isPatient()
+    {
+        return $this->role === 'patient';
+    }
+
     public function isAdmin()
     {
         return $this->role === 'admin';
+    }
+
+    public function appointments(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Appointment::class, 'patient_id');
     }
 }

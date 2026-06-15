@@ -47,6 +47,11 @@
                         <span>Wyszukaj Lekarza</span>
                     </a>
 
+                    <a href="{{ url('/Rezerwacja') }}" class="action-btn">
+                        <span class="icon">📅</span>
+                        <span>Rezerwacja wizyty</span>
+                    </a>
+
                     <a href="{{ url('/ListaWizyt') }}" class="action-btn">
                         <span class="icon">💼</span>
                         <span>Moje Wizyty</span>

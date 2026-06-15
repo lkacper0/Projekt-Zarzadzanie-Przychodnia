@@ -13,8 +13,11 @@
 <body>
     @php
         $isPanel = request()->is(
-            'PanelUzytkownika', 'Rezerwacja', 'DiagnozaZalecenia',
-            'PanelLekarza', 'ListaWizyt', 'GodzinyPracy', 'Kartoteka', 'HistoriaPacjenta'
+            'PanelUzytkownika', 'PanelUzytkownika/*',
+            'Rezerwacja', 'Rezerwacja/*',
+            'Lekarze', 'DiagnozaZalecenia',
+            'PanelLekarza', 'PanelLekarza/*',
+            'ListaWizyt', 'GodzinyPracy', 'Kartoteka', 'HistoriaPacjenta'
         );
         $user = auth()->user();
     @endphp
@@ -37,6 +40,7 @@
                 @else
                     <a href="{{ url('/PanelUzytkownika') }}">Moje Dane</a>
                     <a href="{{ url('/Lekarze') }}">Wyszukaj Lekarza</a>
+                    <a href="{{ url('/Rezerwacja') }}">Rezerwacja</a>
                     <a href="{{ url('/ListaWizyt') }}">Moje Wizyty</a>
                     <a href="{{ url('/DiagnozaZalecenia') }}">Diagnoza i Zalecenia</a>
                 @endif

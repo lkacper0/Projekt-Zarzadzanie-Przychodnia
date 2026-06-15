@@ -10,9 +10,6 @@ use Illuminate\Support\Facades\Hash;
 
 class PatientController extends Controller
 {
-    /**
-     * Display patient profile / main panel.
-     */
     public function index()
     {
         $user = Auth::user();
@@ -22,13 +19,10 @@ class PatientController extends Controller
         return view('patient.panel', compact('user', 'specializations', 'application'));
     }
 
-    /**
-     * Display patient's appointments.
-     */
     public function visits()
     {
         $user = Auth::user();
-        
+
         $upcomingAppointments = Appointment::where('patient_id', $user->id)
             ->whereHas('slot', function ($query) {
                 $query->where('start_time', '>=', now());
@@ -48,9 +42,6 @@ class PatientController extends Controller
         return view('patient.visits', compact('upcomingAppointments', 'pastAppointments'));
     }
 
-    /**
-     * Handle submission of doctor application.
-     */
     public function applyToBeDoctor(Request $request)
     {
         $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
@@ -94,9 +85,6 @@ class PatientController extends Controller
         ]);
     }
 
-    /**
-     * Display diagnosis and recommendations.
-     */
     public function diagnosis()
     {
         $user = Auth::user();
@@ -109,9 +97,6 @@ class PatientController extends Controller
         return view('patient.diagnosis', compact('appointments'));
     }
 
-    /**
-     * Search and filter doctors.
-     */
     public function searchDoctors(Request $request)
     {
         $search = $request->get('search');
@@ -168,18 +153,12 @@ class PatientController extends Controller
         return view('patient.search_doctors', compact('doctors', 'specializations', 'tags', 'search', 'specializationId', 'tagId', 'sort'));
     }
 
-    /**
-     * Show edit profile page.
-     */
     public function editProfile()
     {
         $user = Auth::user();
         return view('patient.edit_profile', compact('user'));
     }
 
-    /**
-     * Update user profile.
-     */
     public function updateProfile(Request $request)
     {
         $user = Auth::user();

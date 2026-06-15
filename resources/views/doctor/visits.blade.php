@@ -9,7 +9,6 @@
     <h1 class="doc-title">Lista Wizyt</h1>
 
     <div class="doc-grid">
-        <!-- Profile info sidebar card -->
         <div class="doc-card photo-card">
             <div class="photo-wrapper">
                 @if($profile && $profile->profile_photo)
@@ -25,7 +24,6 @@
             <span class="badge-active">Panel Lekarza</span>
         </div>
 
-        <!-- Appointments List -->
         <div class="doc-card" style="overflow-x: auto;">
             <h2 class="card-title">Zarezerwowane Wizyty</h2>
 
@@ -81,6 +79,9 @@
                 <div style="text-align: center; padding: 40px 10px; color: #a0aec0;">
                     <span style="font-size: 40px; display: block; margin-bottom: 15px;">📅</span>
                     Brak zaplanowanych wizyt pacjentów.
+                    <div style="margin-top: 16px;">
+                        <a href="{{ url('/GodzinyPracy') }}" class="btn btn-primary" style="text-decoration: none;">Dodaj godziny pracy</a>
+                    </div>
                 </div>
             @endif
         </div>

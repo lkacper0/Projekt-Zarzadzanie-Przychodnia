@@ -9,7 +9,6 @@
     <h1 class="doc-title">Historia Pacjentów</h1>
 
     <div class="doc-grid">
-        <!-- Profile info sidebar card -->
         <div class="doc-card photo-card">
             <div class="photo-wrapper">
                 @if($profile && $profile->profile_photo)
@@ -25,7 +24,6 @@
             <span class="badge-active">Panel Lekarza</span>
         </div>
 
-        <!-- History of Consultations -->
         <div class="doc-card">
             <h2 class="card-title font-title">Wystawione Zalecenia i Diagnozy</h2>
 

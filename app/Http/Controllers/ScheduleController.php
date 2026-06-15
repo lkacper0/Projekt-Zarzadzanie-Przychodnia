@@ -8,6 +8,7 @@ use App\Models\DoctorProfile;
 use App\Models\Service;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
 class ScheduleController extends Controller
@@ -16,7 +17,7 @@ class ScheduleController extends Controller
     public function doctorSchedule()
     {
         $user    = Auth::user();
-        $profile = DoctorProfile::where('user_id', $user->id)->firstOrFail();
+        $profile = DoctorProfile::where('user_id', $user->id)->with('user')->firstOrFail();
 
         $slots = AvailabilitySlot::where('doctor_id', $profile->id)
             ->where('start_time', '>=', Carbon::today())
@@ -66,7 +67,7 @@ class ScheduleController extends Controller
             $current->addMinutes($slotLen);
         }
 
-        return redirect('/PanelLekarza/harmonogram')
+        return redirect('/GodzinyPracy')
             ->with('success', "Dodano $created slotów na dzień $date.");
     }
 
@@ -80,7 +81,7 @@ class ScheduleController extends Controller
             ->firstOrFail();
         $slot->delete();
 
-        return redirect('/PanelLekarza/harmonogram')->with('success', 'Slot usunięty.');
+        return redirect('/GodzinyPracy')->with('success', 'Slot usunięty.');
     }
 
 
@@ -116,29 +117,34 @@ class ScheduleController extends Controller
         ]);
 
         $user = Auth::user();
-        if (!$user) {
-            return redirect('/login')->with('error', 'Musisz być zalogowany, aby zarezerwować wizytę.');
+        $slot = AvailabilitySlot::findOrFail($slotId);
+
+        try {
+            DB::transaction(function () use ($request, $slotId, $user) {
+                $slot = AvailabilitySlot::where('id', $slotId)
+                    ->where('is_booked', false)
+                    ->where('start_time', '>=', now())
+                    ->lockForUpdate()
+                    ->firstOrFail();
+
+                $service = Service::where('id', $request->service_id)
+                    ->where('doctor_id', $slot->doctor_id)
+                    ->firstOrFail();
+
+                $slot->is_booked = true;
+                $slot->save();
+
+                Appointment::create([
+                    'slot_id' => $slot->id,
+                    'patient_id' => $user->id,
+                    'service_id' => $service->id,
+                    'status' => 'pending',
+                ]);
+            });
+        } catch (\Throwable $e) {
+            return redirect('/Rezerwacja/lekarz/' . $slot->doctor_id)
+                ->with('error', 'Nie udało się zarezerwować terminu. Wybierz inny slot i spróbuj ponownie.');
         }
-
-        $slot = AvailabilitySlot::where('id', $slotId)
-            ->where('is_booked', false)
-            ->where('start_time', '>=', now())
-            ->lockForUpdate()
-            ->firstOrFail();
-
-        $service = Service::where('id', $request->service_id)
-            ->where('doctor_id', $slot->doctor_id)
-            ->firstOrFail();
-
-        $slot->is_booked = true;
-        $slot->save();
-
-        Appointment::create([
-            'slot_id' => $slot->id,
-            'patient_id' => $user->id,
-            'service_id' => $service->id,
-            'status' => 'pending',
-        ]);
 
         return redirect('/Rezerwacja/lekarz/' . $slot->doctor_id)
             ->with('success', 'Wizyta zarezerwowana na ' . $slot->start_time->format('d.m.Y H:i') . '!');

@@ -244,7 +244,7 @@
                             {{ $doctor->bio ?? 'Ten specjalista nie posiada jeszcze szczegółowego opisu profilu.' }}
                         </p>
 
-                        <button onclick="alert('Moduł rezerwacji terminów wizyt jest w trakcie wdrażania.')" class="btn-auth" style="margin-top: auto; padding: 10px; font-size: 14px; box-shadow: none;">Zarezerwuj wizytę</button>
+                        <a href="{{ url('/Rezerwacja/lekarz/'.$doctor->id) }}" class="btn-auth" style="margin-top: auto; padding: 10px; font-size: 14px; box-shadow: none; text-align: center; text-decoration: none;">Zarezerwuj wizytę</a>
                     </div>
                 @endif
             @endforeach

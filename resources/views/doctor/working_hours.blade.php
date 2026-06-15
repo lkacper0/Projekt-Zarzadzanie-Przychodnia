@@ -9,7 +9,6 @@
     <h1 class="doc-title">Godziny Pracy</h1>
 
     <div class="doc-grid">
-        <!-- Profile info sidebar card -->
         <div class="doc-card photo-card">
             <div class="photo-wrapper">
                 @if($profile && $profile->profile_photo)
@@ -25,7 +24,6 @@
             <span class="badge-active">Panel Lekarza</span>
         </div>
 
-        <!-- Working Hours / Slots List -->
         <div class="doc-card" style="overflow-x: auto;">
             <h2 class="card-title font-title">Terminarz i Grafiki</h2>
 

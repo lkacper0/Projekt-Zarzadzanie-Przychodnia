@@ -1,11 +1,11 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PatientController;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\ScheduleController;
 
 Route::get('/', function () {
@@ -21,10 +21,10 @@ Route::middleware('guest')->group(function () {
     Route::get('/Rejestracja', [AuthController::class, 'showRegister'])->name('register');
 });
 
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-Route::get('/oczekiwanie-na-akceptacje', [AuthController::class, 'showPending'])->name('pending');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
+Route::get('/oczekiwanie-na-akceptacje', [AuthController::class, 'showPending'])->name('pending')->middleware('auth');
 
-Route::middleware(['role:admin'])->group(function () {
+Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin', [AdminController::class, 'index']);
     Route::get('/admin/create', [AdminController::class, 'create']);
     Route::post('/admin', [AdminController::class, 'store']);
@@ -42,7 +42,7 @@ Route::middleware(['role:admin'])->group(function () {
     Route::post('/admin/{id}/toggle-ban', [AdminController::class, 'toggleBan']);
 });
 
-Route::middleware(['role:doctor'])->group(function () {
+Route::middleware(['auth', 'role:doctor'])->group(function () {
     Route::get('/PanelLekarza', [DoctorController::class, 'panel']);
     Route::post('/PanelLekarza/profil', [DoctorController::class, 'updateProfile']);
 
@@ -53,34 +53,42 @@ Route::middleware(['role:doctor'])->group(function () {
     Route::put('/PanelLekarza/uslugi/{id}', [DoctorController::class, 'updateService']);
     Route::delete('/PanelLekarza/uslugi/{id}', [DoctorController::class, 'destroyService']);
 
-    Route::get('/GodzinyPracy', [DoctorController::class, 'workingHours']);
+    Route::get('/GodzinyPracy', [ScheduleController::class, 'doctorSchedule']);
+    Route::post('/GodzinyPracy/generuj', [ScheduleController::class, 'generateSlots']);
+    Route::delete('/GodzinyPracy/slot/{id}/usun', [ScheduleController::class, 'deleteSlot']);
+
+    Route::get('/PanelLekarza/lista-godzin', [DoctorController::class, 'workingHours']);
+
+    Route::get('/PanelLekarza/harmonogram', fn () => redirect('/GodzinyPracy'));
+    Route::post('/PanelLekarza/harmonogram/generuj', [ScheduleController::class, 'generateSlots']);
+    Route::delete('/PanelLekarza/harmonogram/slot/{id}/usun', [ScheduleController::class, 'deleteSlot']);
+
     Route::get('/Kartoteka', [DoctorController::class, 'records']);
     Route::get('/HistoriaPacjenta', [DoctorController::class, 'history']);
 });
 
-Route::middleware(['role:patient'])->group(function () {
+Route::middleware(['auth', 'role:patient'])->group(function () {
     Route::get('/PanelUzytkownika', [PatientController::class, 'index']);
     Route::post('/PanelUzytkownika/aplikuj', [PatientController::class, 'applyToBeDoctor']);
     Route::get('/PanelUzytkownika/edycja', [PatientController::class, 'editProfile']);
     Route::post('/PanelUzytkownika/edycja', [PatientController::class, 'updateProfile']);
     Route::get('/Lekarze', [PatientController::class, 'searchDoctors']);
     Route::get('/DiagnozaZalecenia', [PatientController::class, 'diagnosis']);
+
+    Route::get('/Rezerwacja', [ScheduleController::class, 'bookingIndex']);
+    Route::get('/Rezerwacja/lekarz/{id}', [ScheduleController::class, 'bookingDoctor']);
+    Route::post('/Rezerwacja/slot/{id}', [ScheduleController::class, 'bookSlot']);
 });
 
-Route::get('/ListaWizyt', function () {
-    $user = Auth::user();
-    if ($user->isDoctor()) {
-        return app(DoctorController::class)->visits();
-    }
-    return app(PatientController::class)->visits();
-})->middleware('role:patient,doctor,admin');
+Route::middleware(['auth', 'role:patient,doctor,admin'])->group(function () {
+    Route::get('/ListaWizyt', function () {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
 
-Route::get('/PanelLekarza/harmonogram', [ScheduleController::class, 'doctorSchedule']);
-Route::post('/PanelLekarza/harmonogram/generuj', [ScheduleController::class, 'generateSlots']);
-Route::delete('/PanelLekarza/harmonogram/slot/{id}/usun', [ScheduleController::class, 'deleteSlot']);
+        if ($user && $user->role === 'doctor') {
+            return app(DoctorController::class)->visits();
+        }
 
-Route::get('/Rezerwacja', [ScheduleController::class, 'bookingIndex']);
-Route::get('/Rezerwacja/lekarz/{id}', [ScheduleController::class, 'bookingDoctor']);
-Route::post('/Rezerwacja/slot/{id}', [ScheduleController::class, 'bookSlot']);
-
-
+        return app(PatientController::class)->visits();
+    });
+});

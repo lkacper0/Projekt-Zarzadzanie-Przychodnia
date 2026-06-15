@@ -6,11 +6,10 @@ use App\Http\Controllers\AuthController;
 
 Route::get('/doctors', [ApiController::class, 'getDoctors']);
 Route::get('/doctors/{id}/slots', [ApiController::class, 'getDoctorSlots']);
-Route::post('/appointments', [ApiController::class, 'bookAppointment']);
+Route::post('/appointments', [ApiController::class, 'bookAppointment'])->middleware('auth');
 
-// Session-based API authentication routes
 Route::middleware('web')->prefix('auth')->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/register', [AuthController::class, 'register']);
-    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth');
 });

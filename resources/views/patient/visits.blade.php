@@ -72,6 +72,7 @@
         @else
             <div class="empty-state" style="padding: 30px 20px;">
                 <p>Nie masz zaplanowanych żadnych nadchodzących wizyt.</p>
+                <a href="{{ url('/Rezerwacja') }}" class="btn-auth" style="display:inline-block; margin-top:15px; padding:10px 20px; width:auto; text-decoration:none;">Zarezerwuj wizytę</a>
             </div>
         @endif
     </div>
