@@ -36,6 +36,10 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/admin/doctor-applications/{id}/approve', [AdminController::class, 'approveDoctor']);
     Route::delete('/admin/doctor-applications/{id}', [AdminController::class, 'destroyDoctorApplication']);
 
+    Route::get('/admin/specjalizacje', [AdminController::class, 'specializations']);
+    Route::post('/admin/specjalizacje', [AdminController::class, 'storeSpecialization']);
+    Route::delete('/admin/specjalizacje/{id}', [AdminController::class, 'destroySpecialization']);
+
     Route::get('/admin/{id}/edit', [AdminController::class, 'edit']);
     Route::put('/admin/{id}', [AdminController::class, 'update']);
     Route::delete('/admin/{id}', [AdminController::class, 'destroy']);
@@ -45,6 +49,11 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 Route::middleware(['auth', 'role:doctor'])->group(function () {
     Route::get('/PanelLekarza', [DoctorController::class, 'panel']);
     Route::post('/PanelLekarza/profil', [DoctorController::class, 'updateProfile']);
+    Route::post('/PanelLekarza/tagi', [DoctorController::class, 'syncTags']);
+    Route::post('/PanelLekarza/specjalizacje/dodaj', [DoctorController::class, 'addSpecialization']);
+    Route::delete('/PanelLekarza/specjalizacje/{id}', [DoctorController::class, 'removeSpecialization']);
+    Route::post('/PanelLekarza/galeria', [DoctorController::class, 'uploadGallery']);
+    Route::delete('/PanelLekarza/galeria/{id}', [DoctorController::class, 'deleteGallery']);
 
     Route::get('/PanelLekarza/uslugi', [DoctorController::class, 'services']);
     Route::get('/PanelLekarza/uslugi/dodaj', [DoctorController::class, 'createService']);

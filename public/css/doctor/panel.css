@@ -358,6 +358,146 @@ textarea.form-control {
     gap: 8px;
 }
 
+.full-width-card {
+    grid-column: 1 / -1;
+}
+
+.tags-current {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.tag-pill {
+    display: inline-block;
+    background: linear-gradient(135deg, #ebf8ff, #e0efff);
+    color: #2b6cb0;
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    border: 1px solid #bee3f8;
+}
+
+.tags-empty {
+    color: #a0aec0;
+    font-size: 0.9rem;
+    margin-bottom: 16px;
+}
+
+.tags-form {
+    margin-top: 8px;
+}
+
+.form-label-sm {
+    display: block;
+    font-weight: 600;
+    font-size: 0.88rem;
+    color: #4a5568;
+    margin-bottom: 10px;
+}
+
+.tags-checkbox-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.tag-checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: #f7fafc;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 6px 14px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #4a5568;
+    transition: border-color 0.2s, background 0.2s;
+    user-select: none;
+}
+
+.tag-checkbox-label:hover {
+    border-color: #4a90e2;
+    background: #ebf8ff;
+}
+
+.tag-checkbox-label input[type="checkbox"] {
+    accent-color: #4a90e2;
+    width: 16px;
+    height: 16px;
+}
+
+.tag-checkbox-label input[type="checkbox"]:checked + span {
+    color: #2b6cb0;
+    font-weight: 700;
+}
+
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 14px;
+    margin-bottom: 10px;
+}
+
+.gallery-item {
+    position: relative;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    aspect-ratio: 1 / 1;
+    transition: box-shadow 0.2s, transform 0.2s;
+}
+
+.gallery-item:hover {
+    box-shadow: 0 6px 20px rgba(74, 144, 226, 0.2);
+    transform: translateY(-2px);
+}
+
+.gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.gallery-delete-form {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+}
+
+.gallery-delete-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: rgba(229, 62, 62, 0.85);
+    color: #fff;
+    border: none;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.2s, transform 0.15s;
+    line-height: 1;
+}
+
+.gallery-item:hover .gallery-delete-btn {
+    opacity: 1;
+}
+
+.gallery-delete-btn:hover {
+    background: #e53e3e;
+    transform: scale(1.15);
+}
+
 @media (max-width: 720px) {
     .doc-grid {
         grid-template-columns: 1fr;
@@ -369,5 +509,13 @@ textarea.form-control {
 
     .photo-card {
         order: -1;
+    }
+
+    .gallery-grid {
+        grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    }
+
+    .gallery-delete-btn {
+        opacity: 1;
     }
 }

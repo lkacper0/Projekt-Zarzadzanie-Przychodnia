@@ -15,6 +15,7 @@
         <a href="{{ url('/admin') }}" class="nav-btn active">Użytkownicy</a>
         <a href="{{ url('/admin/reviews') }}" class="nav-btn">Opinie</a>
         <a href="{{ url('/admin/doctor-applications') }}" class="nav-btn">Zgłoszenia Lekarzy</a>
+        <a href="{{ url('/admin/specjalizacje') }}" class="nav-btn">Specjalizacje</a>
     </div>
 
     <div class="admin-toolbar">

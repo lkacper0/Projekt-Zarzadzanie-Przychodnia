@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\DoctorProfile;
+use App\Models\DoctorGallery;
 use App\Models\Service;
+use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -13,20 +15,52 @@ class DoctorController extends Controller
     public function panel()
     {
         $user = Auth::user();
-        $profile = DoctorProfile::where('user_id', $user->id)->with('services')->first();
+        $profile = DoctorProfile::where('user_id', $user->id)->with(['services', 'tags', 'gallery', 'specializations'])->first();
+        $allTags = Tag::orderBy('name')->get();
+        $allSpecializations = \App\Models\Specialization::orderBy('name')->get();
 
-        return view('doctor.panel', compact('user', 'profile'));
+        return view('doctor.panel', compact('user', 'profile', 'allTags', 'allSpecializations'));
     }
 
     public function updateProfile(Request $request)
     {
-        $request->validate([
-            'bio' => 'nullable|string|max:2000',
-            'profile_photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-        ]);
-
         $user = Auth::user();
         $profile = DoctorProfile::where('user_id', $user->id)->firstOrFail();
+
+        $request->validate([
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'pesel' => 'required|string|size:11|unique:users,pesel,' . $user->id,
+            'bio' => 'nullable|string|max:2000',
+            'profile_photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'password' => 'nullable|string|min:6|confirmed',
+        ], [
+            'first_name.required' => 'Imię jest wymagane.',
+            'last_name.required' => 'Nazwisko jest wymagane.',
+            'email.required' => 'Adres e-mail jest wymagany.',
+            'email.email' => 'Podaj poprawny adres e-mail.',
+            'email.unique' => 'Ten adres e-mail jest już zajęty.',
+            'pesel.required' => 'PESEL jest wymagany.',
+            'pesel.size' => 'PESEL musi składać się z 11 cyfr.',
+            'pesel.unique' => 'Ten PESEL jest już zarejestrowany w systemie.',
+            'password.min' => 'Hasło musi mieć co najmniej 6 znaków.',
+            'password.confirmed' => 'Hasła nie są identyczne.',
+            'bio.max' => 'Bio może mieć maksymalnie 2000 znaków.',
+            'profile_photo.image' => 'Zdjęcie profilowe musi być plikiem graficznym.',
+            'profile_photo.mimes' => 'Dozwolone formaty to: jpg, jpeg, png, webp.',
+            'profile_photo.max' => 'Zdjęcie profilowe może mieć maksymalnie 2 MB.',
+        ]);
+
+        $user->first_name = $request->first_name;
+        $user->last_name = $request->last_name;
+        $user->email = $request->email;
+        $user->pesel = $request->pesel;
+
+        if ($request->filled('password')) {
+            $user->password_hash = \Illuminate\Support\Facades\Hash::make($request->password);
+        }
+        $user->save();
 
         $profile->bio = $request->bio;
 
@@ -40,6 +74,95 @@ class DoctorController extends Controller
         $profile->save();
 
         return redirect('/PanelLekarza')->with('success', 'Profil został zaktualizowany!');
+    }
+
+    public function syncTags(Request $request)
+    {
+        $request->validate([
+            'tags' => 'nullable|array',
+            'tags.*' => 'integer|exists:tags,id',
+            'new_tag' => 'nullable|string|max:60',
+        ]);
+
+        $user = Auth::user();
+        $profile = DoctorProfile::where('user_id', $user->id)->firstOrFail();
+
+        $tagIds = $request->input('tags', []);
+
+        if ($request->filled('new_tag')) {
+            $name = trim($request->new_tag);
+            $tag = Tag::firstOrCreate(['name' => $name]);
+            $tagIds[] = $tag->id;
+        }
+
+        $profile->tags()->sync(array_unique($tagIds));
+
+        return redirect('/PanelLekarza')->with('success', 'Tagi zostały zaktualizowane!');
+    }
+
+    public function addSpecialization(Request $request)
+    {
+        $request->validate([
+            'specialization_id' => 'required|integer|exists:specializations,id',
+        ]);
+
+        $user = Auth::user();
+        $profile = DoctorProfile::where('user_id', $user->id)->firstOrFail();
+
+        if (!$profile->specializations->contains($request->specialization_id)) {
+            $profile->specializations()->attach($request->specialization_id);
+        }
+
+        return redirect('/PanelLekarza')->with('success', 'Specjalizacja została dodana do Twojego profilu!');
+    }
+
+    public function removeSpecialization($id)
+    {
+        $user = Auth::user();
+        $profile = DoctorProfile::where('user_id', $user->id)->firstOrFail();
+
+        $profile->specializations()->detach($id);
+
+        return redirect('/PanelLekarza')->with('success', 'Specjalizacja została usunięta z Twojego profilu!');
+    }
+
+    public function uploadGallery(Request $request)
+    {
+        $request->validate([
+            'gallery_photos' => 'required|array|max:10',
+            'gallery_photos.*' => 'image|mimes:jpg,jpeg,png,webp|max:3072',
+        ]);
+
+        $user = Auth::user();
+        $profile = DoctorProfile::where('user_id', $user->id)->firstOrFail();
+
+        foreach ($request->file('gallery_photos') as $file) {
+            $filename = 'gallery_' . $profile->id . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('uploads/doctors/gallery'), $filename);
+
+            DoctorGallery::create([
+                'doctor_id' => $profile->id,
+                'image_url' => 'uploads/doctors/gallery/' . $filename,
+            ]);
+        }
+
+        return redirect('/PanelLekarza')->with('success', 'Zdjęcia dodane do galerii!');
+    }
+
+    public function deleteGallery($id)
+    {
+        $user = Auth::user();
+        $profile = DoctorProfile::where('user_id', $user->id)->firstOrFail();
+        $photo = DoctorGallery::where('id', $id)->where('doctor_id', $profile->id)->firstOrFail();
+
+        $path = public_path($photo->image_url);
+        if (file_exists($path)) {
+            unlink($path);
+        }
+
+        $photo->delete();
+
+        return redirect('/PanelLekarza')->with('success', 'Zdjęcie usunięte z galerii!');
     }
 
     public function services()

@@ -182,5 +182,35 @@ class AdminController extends Controller
         return redirect('/admin/doctor-applications')->with('success', 'Zgłoszenie lekarza zostało odrzucone!');
     }
 
+    public function specializations()
+    {
+        $specializations = \App\Models\Specialization::orderBy('name', 'asc')->get();
+        return view('admin.specializations', compact('specializations'));
+    }
 
+    public function storeSpecialization(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255|unique:specializations,name',
+        ], [
+            'name.required' => 'Nazwa specjalizacji jest wymagana.',
+            'name.unique' => 'Taka specjalizacja już istnieje.',
+            'name.max' => 'Nazwa specjalizacji może mieć maksymalnie 255 znaków.',
+        ]);
+
+        \App\Models\Specialization::create([
+            'name' => trim($request->name),
+        ]);
+
+        return redirect('/admin/specjalizacje')->with('success', 'Specjalizacja została dodana!');
+    }
+
+    public function destroySpecialization($id)
+    {
+        $specialization = \App\Models\Specialization::findOrFail($id);
+        $specialization->doctors()->detach();
+        $specialization->delete();
+
+        return redirect('/admin/specjalizacje')->with('success', 'Specjalizacja została usunięta!');
+    }
 }

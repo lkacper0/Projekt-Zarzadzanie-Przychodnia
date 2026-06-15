@@ -13,6 +13,7 @@
         <a href="{{ url('/admin') }}" class="nav-btn">Użytkownicy</a>
         <a href="{{ url('/admin/reviews') }}" class="nav-btn active">Opinie</a>
         <a href="{{ url('/admin/doctor-applications') }}" class="nav-btn">Zgłoszenia Lekarzy</a>
+        <a href="{{ url('/admin/specjalizacje') }}" class="nav-btn">Specjalizacje</a>
     </div>
 
     @if(session('success'))
