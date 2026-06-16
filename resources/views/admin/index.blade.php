@@ -46,42 +46,42 @@
         </div>
     @endif
 
-    <table class="admin-table">
+    <div class="container">
 
         <thead>
-            <tr>
-                <th>Id</th>
-                <th>Imię</th>
-                <th>Nazwisko</th>
-                <th>E-mail</th>
-                <th>PESEL</th>
-                <th>Rola</th>
-                <th class="text-center">Aktywny?</th>
-                <th class="text-center">Opcje</th>
+            <div class="row">
+                <div class="col-1">Id</div>
+                <div class="col-1">Imię</div>
+                <div class="col-1">Nazwisko</div>
+                <div class="col-2">E-mail</div>
+                <div class="col-2">PESEL</div>
+                <div class="col-1">Rola</div>
+                <div class="col-1">Aktywny?</div>
+                <div class="col-3">Opcje</div>
 
-            </tr>
+            </div>
         </thead>
         <tbody>
 
             @foreach($users as $user)
 
-            <tr class="{{ $loop->index % 2 == 0 ? 'row-even' : 'row-odd' }}">
+            <div class="row" class="{{ $loop->index % 2 == 0 ? 'row-even' : 'row-odd' }}">
 
-                <td>{{ $user->id }}</td>
-                <td>{{ $user->first_name }}</td>
-                <td>{{ $user->last_name }}</td>
-                <td>{{ $user->email }}</td>
-                <td>{{ $user->pesel ?? '-' }}</td>
-                <td class="text-bold">{{ $user->role }}</td>
-                <td class="text-center">
+                <div class="col-1" style="border: 1px solid gray;">{{ $user->id }}</div>
+                <div class="col-1" style="border: 1px solid gray;">{{ $user->first_name }}</div>
+                <div class="col-1" style="border: 1px solid gray;">{{ $user->last_name }}</div>
+                <div class="col-2" style="border: 1px solid gray;">{{ $user->email }}</div>
+                <div class="col-2" style="border: 1px solid gray;">{{ $user->pesel ?? '-' }}</div>
+                <div class="col-1" style="border: 1px solid gray;">{{ $user->role }}</div>
+                <div class="col-1" style="border: 1px solid gray;">
 
                     @if($user->is_active)
                         <span class="status-active">Tak</span>
                     @else
                         <span class="status-blocked">Zablokowany</span>
                     @endif
-                </td>
-                <td class="text-center">
+                </div>
+                <div class="col-3" style="border: 1px solid gray;">
 
                     <div class="actions-wrapper">
 
@@ -104,13 +104,13 @@
 
                         </form>
                     </div>
-                </td>
-            </tr>
+                </div>
+            </div>
 
             @endforeach
 
         </tbody>
-    </table>
+    </div>
 </div>
 
 @endsection

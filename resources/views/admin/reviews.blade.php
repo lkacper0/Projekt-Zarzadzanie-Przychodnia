@@ -27,24 +27,25 @@
         </div>
     @endif
 
-    <table class="admin-table">
-        <thead>
-            <tr>
-                <th class="col-id">Id</th>
-                <th class="col-patient">Pacjent</th>
-                <th class="col-doctor">Lekarz</th>
-                <th class="col-rating">Ocena</th>
-                <th class="col-comment">Komentarz</th>
-                <th class="col-actions">Akcje</th>
-            </tr>
-        </thead>
-        <tbody>
+    <div class="container">
+        <div class="container">
+            <div class="row">
+                <div class="col-1" style="border: 1px solid gray; background-color: #003366; color: white">Id</div>
+                <div class="col-2" style="border: 1px solid gray; background-color: #003366; color: white">Pacjent</div>
+                <div class="col-2" style="border: 1px solid gray; background-color: #003366; color: white">Lekarz</div>
+                <div class="col-1" style="border: 1px solid gray; background-color: #003366; color: white">Ocena</div>
+                <div class="col-4" style="border: 1px solid gray; background-color: #003366; color: white">Komentarz</div>
+                <div class="col-2" style="border: 1px solid gray; background-color: #003366; color: white">Akcje</div>
+            </div>
+        </div>
+
+        <div class="container">
             @forelse($reviews as $review)
 
-            <tr class="{{ $loop->index % 2 == 0 ? 'row-even' : 'row-odd' }}">
+            <div class="row">
 
-                <td>{{ $review->id }}</td>
-                <td>
+                <div class="col-1">{{ $review->id }}</div>
+                <div class="col-2">
 
                     @if($review->patient)
 
@@ -56,8 +57,8 @@
 
                     @endif
 
-                </td>
-                <td>
+                </div>
+                <div class="col-2">
                     @if($review->doctor && $review->doctor->user)
 
                         {{ $review->doctor->user->first_name }} {{ $review->doctor->user->last_name }}
@@ -66,32 +67,30 @@
                         <span class="text-muted-italic">Brak danych</span>
 
                     @endif
-                </td>
-                <td class="rating-badge">
+                </div>
+                <div class="col-1">
 
                     {{ $review->rating }} / 5
 
-                </td>
-                <td>{{ $review->comment ?? '-' }}</td>
+                </div>
+                <div class="col-4">{{ $review->comment ?? '-' }}</div>
 
-                <td class="text-center">
+                <div class="col-2">
                     <form action="{{ url('/admin/reviews/'.$review->id) }}" method="POST" style="margin: 0;" onsubmit="return confirm('Na pewno chcesz usunąć tę opinię?');">
                         @csrf
                         @method('DELETE')
 
-                        <button type="submit" class="btn-delete">Usuń</button>
+                        <button type="button" class="btn btn-danger">Usuń</button>
 
                     </form>
-                </td>
-            </tr>
+                </div>
+            </div>
             @empty
-            <tr>
-
-                <td colspan="6" class="text-center text-muted-italic" style="padding: 20px;"> Brak opini w bazie danych. </td>
-            </tr>
+            <div class="row">
+                <div class="col-2" style="padding: 20px;"> Brak opini w bazie danych. </div>
+            </div>
             @endforelse
-        </tbody>
-    </table>
+        </div>
 </div>
 
 @endsection

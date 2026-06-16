@@ -29,24 +29,24 @@
 
     @endif
 
-    <table class="admin-table">
+    <div class="container">
 
         <thead>
-            <tr>
-                <th class="col-id">ID</th>
-                <th class="col-candidate">Kandydat</th>
-                <th class="col-email">E-mail</th>
-                <th class="col-bio">Biogram (Opis)</th>
-                <th class="col-actions">Akcje</th>
-            </tr>
+            <div class="row">
+                <div class="col-1" style="border: 1px solid gray; background-color: #003366; color: white">Id</div>
+                <div class="col-1" style="border: 1px solid gray; background-color: #003366; color: white">Kandydat</div>
+                <div class="col-3" style="border: 1px solid gray; background-color: #003366; color: white">E-mail</div>
+                <div class="col-5" style="border: 1px solid gray; background-color: #003366; color: white">Biogram (Opis)</div>
+                <div class="col-2" style="border: 1px solid gray; background-color: #003366; color: white">Akcje</div>
+            </div>
         </thead>
         <tbody>
 
             @forelse($applications as $app)
-            <tr class="{{ $loop->index % 2 == 0 ? 'row-even' : 'row-odd' }}">
+            <div class="row" class="{{ $loop->index % 2 == 0 ? 'row-even' : 'row-odd' }}">
 
-                <td>{{ $app->id }}</td>
-                <td>
+                <div class="col-1">{{ $app->id }}</div>
+                <div class="col-1">
 
                     @if($app->user)
                         {{ $app->user->first_name }} {{ $app->user->last_name }}
@@ -54,11 +54,11 @@
                         <span class="text-muted-italic">Brak danych</span>
                     @endif
 
-                </td>
-                <td>{{ $app->user->email ?? '-' }}</td>
-                <td>{{ $app->bio ?? 'Brak opisu.' }}</td>
+                </div>
+                <div class="col-3">{{ $app->user->email ?? '-' }}</div>
+                <div class="col-5">{{ $app->bio ?? 'Brak opisu.' }}</div>
 
-                <td class="text-center">
+                <div class="col-2">
 
                     <form action="{{ url('/admin/doctor-applications/'.$app->id.'/approve') }}" method="POST" class="m-0">
                         @csrf
@@ -69,8 +69,8 @@
                         @method('DELETE')
                         <button type="submit" class="btn-danger">Odrzuć zgłoszenie</button>
                     </form>
-                </td>
-            </tr>
+                </div>
+            </div>
             @empty
 
             <tr>
@@ -78,6 +78,6 @@
             </tr>
             @endforelse
         </tbody>
-    </table>
+    </div>
 </div>
 @endsection
