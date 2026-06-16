@@ -211,7 +211,7 @@ class AdminController extends Controller
         $specialization->doctors()->detach();
         $specialization->delete();
 
-        return redirect('/admin/specjalizacje')->with('success', 'Specjalizacja została usunięta!');
+        return redirect('/admin/specjalizacje')->with('success', 'Specjalizacja została usunięta!');}
     public function homepage()
     {
         return view('admin.homepage');
