@@ -1,58 +1,179 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# ProHealth - System Zarządzania Przychodnią Medyczną
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Kompleksowa aplikacja webowa typu full-stack przeznaczona do zarządzania placówką medyczną, automatyzująca procesy rezerwacji wizyt, zarządzania grafikami lekarzy oraz obsługi pacjentów. Modyfikowanie podstron za pomocą WYSIWYG.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Spis treści
+1. [Autorzy i podział ról](#1-autorzy-i-podział-ról)
+2. [Użyte technologie](#2-Użyte-technologie)
+3. [Przeznaczenie aplikacji](#3-przeznaczenie-aplikacji)
+4. [Opis funkcjonalności](#4-opis-funkcjonalności)
+    * [Panel Pacjenta](#panel-pacjenta)
+    * [Panel Administratora](#panel-administratora)
+    * [Panel Lekarza](#panel-lekarza)
+5. [Schemat ERD (Entity Relationship Diagram)](#5-schemat-erd-entity-relationship-diagram)
+6. [Dalszy rozwój](#6-dalszy-rozwój)
+7. [Instrukcja uruchomienia aplikacji krok po kroku](#7-instrukcja-uruchomienia-aplikacji-krok-po-kroku)
+8. [Reprezentatywny przebieg użytku aplikacji](#8-reprezentatywny-przebieg-użytku-aplikacji)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+---
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## 1. Autorzy i podział ról
 
-## Learning Laravel
+* **[Kacper Łazorczyk]**
+  * System logowania i rejestracji.
+  * Implementacja bazy danych.
+  * Strona główna, WYSIWYG.
+  * Sekcja najlepsi lekarze.
+  * Wyszukiwarka i filtry.
+  * Profil Pacjenta.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+* **[Kacper Popowicz]**
+  * Profil Lekarza.
+  * Zarządzanie wizytami.
+  * Panel administratora.
+  * Podsumowanie wizyt.
+  * Proces rezerwacji.
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+## 2. Użyte technologie
 
-## Agentic Development
+Aplikacja została przygotowana bez użycia zewnętrznych bibliotek komponentów oraz gotowych szablonów.
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+* **Backend:** PHP 8.4, Laravel Framework 13
+* **Frontend:** Vanilla HTML5, Custom CSS3
+* **Baza danych:** PostgreSQL 15
+* **Środowisko:** Docker, Docker Compose
 
-```bash
-composer require laravel/boost --dev
+---
 
-php artisan boost:install
-```
+## 3. Przeznaczenie aplikacji
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+`ProHealth` rozwiązuje problem czasochłonnej, telefonicznej rejestracji pacjentów oraz trudności w zarządzaniu grafikami lekarzy wielu specjalizacji. Aplikacja kierowana jest do małych i średnich przychodni zdrowia, które potrzebują niezależnego, bezpiecznego i szybkiego systemu do obsługi wewnętrznej oraz udostępnienia pacjentom panelu rezerwacji online 24/7.
 
-## Contributing
+---
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## 4. Opis funkcjonalności
 
-## Code of Conduct
+### Panel Pacjenta
+* Rejestracja i logowanie do systemu.
+* Przegląd profili lekarzy (specjalizacje, opisy, oceny).
+* Rezerwacja wolnych terminów wizyt w czasie rzeczywistym.
+* Historia odbytych oraz lista nadchodzących wizyt.
+* System wystawiania recenzji i ocen lekarzom.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### Panel Administratora
+* Pełny moduł **CRUD** zarządzania bazą lekarzy i pacjentów.
+* Przegląd i moderacja opinii wystawionych przez pacjentów.
+* Modyfikacja stron WYSIWYG.
+* Dodawanie specjalizacji.
 
-## Security Vulnerabilities
+### Panel Lekarza
+* Definiowanie i modyfikowanie harmonogramu pracy(dni, godziny przyjęć).
+* Dodanie zdjęć do galeri.
+* Dodawanie tagów, spejalizacji.
+* Wystawianie zaleceń/diagnozy.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+---
 
-## License
+## 5. Schemat ERD (Entity Relationship Diagram)
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Poniższy schemat przedstawia strukturę relacyjnej bazy danych PostgreSQL.
+
+
+![erd](img-readme/erd.png)
+
+
+
+## 6. Dalszy rozwój
+* Projekt mógł by zostać rozwinięty o logistykę zarządzania kilkoma takimi przychodniami.
+* Warto by było wdrożyć system powiadomień SMS, e-mail.
+* Dodanie płatności online.
+
+
+
+
+
+## 7. Instrukcja uruchomienia aplikacji krok po kroku
+
+### Wymagania wstępne
+* Zainstalowany **Docker** oraz **Docker Compose**.
+
+### Uruchomienie projektu
+
+1. **Sklonuj repozytorium:**
+   ```bash
+   git clone https://github.com/lkacper0/Projekt-Zarzadzanie-Przychodnia
+   cd .\Projekt-Zarzadzanie-Przychodnia\
+
+
+2. **Przygotuj plik środowiskowy:**
+    ```bash
+    cp .env.example .env
+* upewnij sie, że kofiguracja bazy danych w .env wygląda następująco:
+
+    ```bash
+    DB_CONNECTION=pgsql
+    DB_HOST=db
+    DB_PORT=5432
+    DB_DATABASE=przychodnia
+    DB_USERNAME=postgres
+    DB_PASSWORD=postgres
+
+
+
+3. **Uruchom kontenery Dockera:**
+    ```bash
+    docker compose up -d --build
+
+4. **Generowanie klucza API:**
+    ```bash
+    docker compose run --rm laravelapp php artisan key:generate
+
+5. **Uruchom migracje bazy danych wraz z zasileniem danymi (Seeding):**
+    ```bash
+    docker compose exec laravelapp php artisan migrate --seed
+
+6. **Dostęp do aplikacji:**
+    * Otwórz przeglądarkę i wejdź pod adres: http://localhost:8000
+
+
+## 8. Reprezentatywny przebieg użytku aplikacji
+
+### 1.
+Główny strona, którą widzimy pod domyślnym adresem: http://localhost:8000, żeby się zalogować wystarczy, kliknąć w prawym górnym rogu strony, przycisk "zaloguj się".
+![Strona glowna](img-readme/glowna.png)
+
+### 2.
+Panel logowania, użytkownik może się tu zalogować, lub zarejestrować jak nie ma jeszcze konta.
+![logowanie](img-readme/logowanie.png)
+
+### 3.
+Podstawowy panel pacjenta. Z jego poziomu, możemy wybrać sobie co chcemy zrobić. Wybieramy Rezerwacje.
+![panel pacjenta](img-readme/panel-pacjenta.png)
+
+### 4.
+Teraz możemy wybrać do jakiego lekarza, chcemy się zapisać.
+![lekarze do wybrania](img-readme/lekarze-do-wybrania.png)
+
+### 5.
+Po wybraniu lekarza, widzimy dostępne sloty czasowe, wybierając uprzednio jedną z dostępnych usług od lekarza, klikając wybrany slot, możemy się zapisać na wizyte w przedstawionym przedziale czasowym.
+![rezerwacja](img-readme/rezerwacja.png)
+
+### 6.
+W zakładce "Moje Wizyty", widzimy nadchodzące wizyty i ich historie.
+![wizyty](img-readme/wizyty.png)
+
+### 7.
+Klikając w "Diagnoza i Zalecenia", otwiera nam się podstrona z wpisanymi przez lekarza, zaleceniami lub diagnozami.
+![diagnoza i zalecenia](img-readme/diagnoza-zalecenia.png)
+
+
+## 9. Dane testowe
+### Dane kont testowych (Seeder)
+Po uruchomieniu seedera możesz zalogować się na następujące konta testowe:
+* **Administrator:** `admin@prohealth.pl` - hasło: `password`
+* **Lekarz:** `lekarz@prohealth.pl` - hasło: `password`
+* **Pacjent:** `pacjent@prohealth.pl` - hasło: `password`
