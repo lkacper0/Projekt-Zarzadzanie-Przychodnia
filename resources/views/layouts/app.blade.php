@@ -24,13 +24,19 @@
 
         <div id="zakladki">
             @if($user)
-                @if($user->isDoctor())
+                @if($user->isAdmin())
+                    <a href="{{ url('/') }}">Strona Główna</a>
+                    <a href="{{ url('/onas') }}">O nas</a>
+                    <a href="{{ url('/kontakt') }}">Kontakt</a>
+                    <a href="{{ url('/admin') }}">Panel Administratora</a>
+                @elseif($user->isDoctor())
                     <a href="{{ url('/PanelLekarza') }}">Moje Dane</a>
                     <a href="{{ url('/ListaWizyt') }}">Lista Wizyt</a>
                     <a href="{{ url('/GodzinyPracy') }}">Godziny Pracy</a>
                     <a href="{{ url('/Kartoteka') }}">Kartoteka Pacjentów</a>
                     <a href="{{ url('/HistoriaPacjenta') }}">Historia Pacjenta</a>
                 @else
+                    <a href="{{ url('/NajlepsiLekarze') }}">Najlepsi Lekarze</a>
                     <a href="{{ url('/PanelUzytkownika') }}">Moje Dane</a>
                     <a href="{{ url('/Lekarze') }}">Wyszukaj Lekarza</a>
                     <a href="{{ url('/ListaWizyt') }}">Moje Wizyty</a>

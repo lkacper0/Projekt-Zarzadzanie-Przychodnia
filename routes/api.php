@@ -8,6 +8,7 @@ Route::get('/doctors', [ApiController::class, 'getDoctors']);
 Route::get('/doctors/{id}/slots', [ApiController::class, 'getDoctorSlots']);
 Route::post('/appointments', [ApiController::class, 'bookAppointment']);
 Route::get('/homepage', [ApiController::class, 'getHomepageData']);
+Route::get('/best-doctors', [ApiController::class, 'getBestDoctors']);
 Route::get('/about', [ApiController::class, 'getAboutData']);
 Route::get('/contact', [ApiController::class, 'getContactData']);
 

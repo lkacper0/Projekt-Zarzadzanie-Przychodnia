@@ -96,7 +96,15 @@ class ApiController extends Controller
         $homepage = PageContent::where('key', 'homepage')->first();
         $content = $homepage ? $homepage->value : '';
 
-        $bestDoctors = DoctorProfile::with(['user', 'specializations'])
+        return response()->json([
+            'success' => true,
+            'content' => $content,
+        ]);
+    }
+
+    public function getBestDoctors()
+    {
+        $doctors = DoctorProfile::with(['user', 'specializations'])
             ->where('is_accepted', true)
             ->orderBy('avg_rating', 'desc')
             ->take(4)
@@ -115,8 +123,7 @@ class ApiController extends Controller
 
         return response()->json([
             'success' => true,
-            'content' => $content,
-            'best_doctors' => $bestDoctors
+            'doctors' => $doctors,
         ]);
     }
 

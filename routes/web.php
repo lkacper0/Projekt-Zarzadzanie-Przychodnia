@@ -71,6 +71,7 @@ Route::middleware(['role:patient'])->group(function () {
     Route::get('/PanelUzytkownika/edycja', [PatientController::class, 'editProfile']);
     Route::post('/PanelUzytkownika/edycja', [PatientController::class, 'updateProfile']);
     Route::get('/Lekarze', [PatientController::class, 'searchDoctors']);
+    Route::get('/NajlepsiLekarze', [PatientController::class, 'bestDoctors']);
     Route::get('/DiagnozaZalecenia', [PatientController::class, 'diagnosis']);
 });
 
