@@ -14,6 +14,9 @@
         <a href="{{ url('/admin/reviews') }}" class="nav-btn active">Opinie</a>
         <a href="{{ url('/admin/doctor-applications') }}" class="nav-btn">Zgłoszenia Lekarzy</a>
         <a href="{{ url('/admin/specjalizacje') }}" class="nav-btn">Specjalizacje</a>
+        <a href="{{ url('/admin/homepage') }}" class="nav-btn">Strona Główna</a>
+        <a href="{{ url('/admin/about') }}" class="nav-btn">O nas</a>
+        <a href="{{ url('/admin/contact') }}" class="nav-btn">Kontakt</a>
     </div>
 
     @if(session('success'))
@@ -61,7 +64,7 @@
                     @else
 
                         <span class="text-muted-italic">Brak danych</span>
-                        
+
                     @endif
                 </td>
                 <td class="rating-badge">

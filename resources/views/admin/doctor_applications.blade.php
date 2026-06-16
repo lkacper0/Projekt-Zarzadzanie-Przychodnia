@@ -11,12 +11,14 @@
     <h1 class="admin-title">Panel Administratora</h1>
 
     <div class="admin-nav">
-
         <a href="{{ url('/admin') }}" class="nav-btn">Użytkownicy</a>
         <a href="{{ url('/admin/reviews') }}" class="nav-btn">Opinie</a>
         <a href="{{ url('/admin/doctor-applications') }}" class="nav-btn active">Zgłoszenia Lekarzy</a>
         <a href="{{ url('/admin/specjalizacje') }}" class="nav-btn">Specjalizacje</a>
 
+        <a href="{{ url('/admin/homepage') }}" class="nav-btn">Strona Główna</a>
+        <a href="{{ url('/admin/about') }}" class="nav-btn">O nas</a>
+        <a href="{{ url('/admin/contact') }}" class="nav-btn">Kontakt</a>
     </div>
 
     @if(session('success'))

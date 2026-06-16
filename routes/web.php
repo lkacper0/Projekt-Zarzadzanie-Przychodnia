@@ -12,8 +12,12 @@ Route::get('/', function () {
     return view('glowna');
 });
 
-Route::get('/o-nas', function () {
+Route::get('/onas', function () {
     return view('about');
+});
+
+Route::get('/kontakt', function () {
+    return view('kontakt');
 });
 
 Route::middleware('guest')->group(function () {
@@ -39,6 +43,9 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/specjalizacje', [AdminController::class, 'specializations']);
     Route::post('/admin/specjalizacje', [AdminController::class, 'storeSpecialization']);
     Route::delete('/admin/specjalizacje/{id}', [AdminController::class, 'destroySpecialization']);
+    Route::get('/admin/homepage', [AdminController::class, 'homepage']);
+    Route::get('/admin/about', [AdminController::class, 'aboutPage']);
+    Route::get('/admin/contact', [AdminController::class, 'contactPage']);
 
     Route::get('/admin/{id}/edit', [AdminController::class, 'edit']);
     Route::put('/admin/{id}', [AdminController::class, 'update']);

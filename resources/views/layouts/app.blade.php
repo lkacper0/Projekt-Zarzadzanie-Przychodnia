@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'ProHealth')</title>
-    
+
     <link rel="stylesheet" href="{{ asset('css/index.css') }}">
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
-    
+
     @stack('styles')
 </head>
 <body>
@@ -30,8 +30,13 @@
         </div>
 
         <div id="zakladki">
-            @if($isPanel && $user)
-                @if($user->isDoctor())
+            @if($user)
+                @if($user->isAdmin())
+                    <a href="{{ url('/') }}">Strona Główna</a>
+                    <a href="{{ url('/onas') }}">O nas</a>
+                    <a href="{{ url('/kontakt') }}">Kontakt</a>
+                    <a href="{{ url('/admin') }}">Panel Administratora</a>
+                @elseif($user->isDoctor())
                     <a href="{{ url('/PanelLekarza') }}">Moje Dane</a>
                     <a href="{{ url('/ListaWizyt') }}">Lista Wizyt</a>
                     <a href="{{ url('/GodzinyPracy') }}">Godziny Pracy</a>

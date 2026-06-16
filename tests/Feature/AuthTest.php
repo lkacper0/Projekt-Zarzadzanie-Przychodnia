@@ -359,5 +359,72 @@ class AuthTest extends TestCase
 
         $response->assertSessionHasErrors(['email']);
     }
+
+    public function test_guest_can_fetch_homepage_data(): void
+    {
+        \App\Models\PageContent::create([
+            'key' => 'homepage',
+            'value' => '<div>Strona Główna</div>'
+        ]);
+
+        $response = $this->getJson('/api/homepage');
+
+        $response->assertStatus(200)
+            ->assertJson([
+                'success' => true,
+                'content' => '<div>Strona Główna</div>'
+            ]);
+    }
+
+    public function test_admin_can_update_homepage_content(): void
+    {
+        $admin = User::create([
+            'first_name' => 'Anna',
+            'last_name' => 'Nowak',
+            'email' => 'admin@example.com',
+            'password_hash' => Hash::make('password'),
+            'role' => 'admin',
+            'pesel' => '90010112347',
+            'is_active' => true,
+        ]);
+
+        $this->actingAs($admin);
+
+        $response = $this->postJson('/api/admin/homepage', [
+            'content' => '<div>Nowa Treść</div>'
+        ]);
+
+        $response->assertStatus(200)
+            ->assertJson([
+                'success' => true,
+                'message' => 'Treść strony głównej została zaktualizowana!'
+            ]);
+
+        $this->assertDatabaseHas('site_contents', [
+            'key' => 'homepage',
+            'value' => '<div>Nowa Treść</div>'
+        ]);
+    }
+
+    public function test_unauthorized_user_cannot_update_homepage_content(): void
+    {
+        $patient = User::create([
+            'first_name' => 'Jan',
+            'last_name' => 'Kowalski',
+            'email' => 'pacjent@example.com',
+            'password_hash' => Hash::make('password'),
+            'role' => 'patient',
+            'pesel' => '90010112345',
+            'is_active' => true,
+        ]);
+
+        $this->actingAs($patient);
+
+        $response = $this->postJson('/api/admin/homepage', [
+            'content' => '<div>Nowa Treść</div>'
+        ]);
+
+        $response->assertStatus(403);
+    }
 }
 

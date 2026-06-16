@@ -7,6 +7,7 @@ use App\Models\DoctorProfile;
 use App\Models\AvailabilitySlot;
 use App\Models\Appointment;
 use App\Models\Service;
+use App\Models\PageContent;
 use Illuminate\Http\Request;
 
 class ApiController extends Controller
@@ -89,4 +90,107 @@ class ApiController extends Controller
             ]
         ], 201);
     }
+
+    public function getHomepageData()
+    {
+        $homepage = PageContent::where('key', 'homepage')->first();
+        $content = $homepage ? $homepage->value : '';
+
+        $bestDoctors = DoctorProfile::with(['user', 'specializations'])
+            ->where('is_accepted', true)
+            ->orderBy('avg_rating', 'desc')
+            ->take(4)
+            ->get()
+            ->map(function ($doc) {
+                return [
+                    'id' => $doc->id,
+                    'name' => $doc->user ? $doc->user->first_name . ' ' . $doc->user->last_name : 'Brak danych',
+                    'avg_rating' => $doc->avg_rating,
+                    'profile_photo' => $doc->profile_photo,
+                    'specializations' => $doc->specializations->map(function ($s) {
+                        return $s->name;
+                    }),
+                ];
+            });
+
+        return response()->json([
+            'success' => true,
+            'content' => $content,
+            'best_doctors' => $bestDoctors
+        ]);
+    }
+
+    public function updateHomepageData(Request $request)
+    {
+        $request->validate([
+            'content' => 'required|string'
+        ]);
+
+        $homepage = PageContent::updateOrCreate(
+            ['key' => 'homepage'],
+            ['value' => $request->content]
+        );
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Treść strony głównej została zaktualizowana!'
+        ]);
+    }
+
+    public function getAboutData()
+    {
+        $about = PageContent::where('key', 'about')->first();
+        $content = $about ? $about->value : '';
+
+        return response()->json([
+            'success' => true,
+            'content' => $content
+        ]);
+    }
+
+    public function updateAboutData(Request $request)
+    {
+        $request->validate([
+            'content' => 'required|string'
+        ]);
+
+        PageContent::updateOrCreate(
+            ['key' => 'about'],
+            ['value' => $request->content]
+        );
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Treść strony O nas została zaktualizowana!'
+        ]);
+    }
+
+    public function getContactData()
+    {
+        $contact = PageContent::where('key', 'contact')->first();
+        $content = $contact ? $contact->value : '';
+
+        return response()->json([
+            'success' => true,
+            'content' => $content
+        ]);
+    }
+
+    public function updateContactData(Request $request)
+    {
+        $request->validate([
+            'content' => 'required|string'
+        ]);
+
+        PageContent::updateOrCreate(
+            ['key' => 'contact'],
+            ['value' => $request->content]
+        );
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Treść strony Kontakt została zaktualizowana!'
+        ]);
+    }
 }
+

@@ -212,5 +212,18 @@ class AdminController extends Controller
         $specialization->delete();
 
         return redirect('/admin/specjalizacje')->with('success', 'Specjalizacja została usunięta!');
+    public function homepage()
+    {
+        return view('admin.homepage');
+    }
+
+    public function aboutPage()
+    {
+        return view('admin.about');
+    }
+
+    public function contactPage()
+    {
+        return view('admin.contact');
     }
 }

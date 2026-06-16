@@ -89,12 +89,12 @@ document.addEventListener('DOMContentLoaded', function() {
     form.addEventListener('submit', async function(e) {
         e.preventDefault();
         
-        // Reset states
+
         alertContainer.innerHTML = '';
         document.querySelectorAll('.error-feedback').forEach(el => el.textContent = '');
         document.querySelectorAll('.form-control').forEach(el => el.classList.remove('is-invalid'));
         
-        // Button loading state
+
         submitBtn.disabled = true;
         btnSpinner.style.display = 'inline-block';
         btnText.textContent = 'Rejestracja...';
