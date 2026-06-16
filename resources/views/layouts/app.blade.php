@@ -36,7 +36,6 @@
                     <a href="{{ url('/Kartoteka') }}">Kartoteka Pacjentów</a>
                     <a href="{{ url('/HistoriaPacjenta') }}">Historia Pacjenta</a>
                 @else
-                    <a href="{{ url('/NajlepsiLekarze') }}">Najlepsi Lekarze</a>
                     <a href="{{ url('/PanelUzytkownika') }}">Moje Dane</a>
                     <a href="{{ url('/Lekarze') }}">Wyszukaj Lekarza</a>
                     <a href="{{ url('/ListaWizyt') }}">Moje Wizyty</a>

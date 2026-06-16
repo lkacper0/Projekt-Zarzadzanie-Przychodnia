@@ -49,14 +49,6 @@ class PatientController extends Controller
     }
 
     /**
-     * Display top-rated doctors.
-     */
-    public function bestDoctors()
-    {
-        return view('patient.best_doctors');
-    }
-
-    /**
      * Handle submission of doctor application.
      */
     public function applyToBeDoctor(Request $request)
