@@ -9,6 +9,7 @@ services:
       - .env
     volumes:
       - .:/var/www/html
+         /var/www/html/vendor
     depends_on:
       - db
     tty: true
