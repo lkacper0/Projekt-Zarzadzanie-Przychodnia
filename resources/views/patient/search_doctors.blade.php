@@ -181,10 +181,14 @@
         }
         .tag-checkbox-input {
             position: absolute;
-            opacity: 0;
-            width: 0;
-            height: 0;
-            pointer-events: none;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
         }
         .tag-checkbox-input:checked + .tag-checkbox-badge {
             background-color: #e0f2fe;
