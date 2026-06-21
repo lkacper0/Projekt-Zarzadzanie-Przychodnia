@@ -13,83 +13,171 @@ use Carbon\Carbon;
 
 class ScheduleController extends Controller
 {
-
     public function doctorSchedule()
     {
         $user    = Auth::user();
         $profile = DoctorProfile::where('user_id', $user->id)->with('user')->firstOrFail();
 
-        $slots = AvailabilitySlot::where('doctor_id', $profile->id)
-            ->where('start_time', '>=', Carbon::today())
-            ->orderBy('start_time')
-            ->with('appointment.patient')
-            ->get()
-            ->groupBy(fn($s) => $s->start_time->toDateString());
+        return view('doctor.schedule', [
+            'profile' => $profile,
+            'slots'   => $this->getGroupedSlots($profile->id),
+        ]);
+    }
 
-        return view('doctor.schedule', compact('profile', 'slots'));
+    public function adminSchedule(Request $request)
+    {
+        $doctors = DoctorProfile::where('is_accepted', true)
+            ->with('user')
+            ->orderBy('id')
+            ->get();
+
+        $selectedDoctorId = $request->get('doctor_id', $doctors->first()?->id);
+        $profile = $doctors->firstWhere('id', (int) $selectedDoctorId) ?? $doctors->first();
+
+        if (!$profile) {
+            return view('admin.schedule', [
+                'doctors' => collect(),
+                'profile' => null,
+                'slots'   => collect(),
+                'selectedDoctorId' => null,
+            ]);
+        }
+
+        return view('admin.schedule', [
+            'doctors'          => $doctors,
+            'profile'          => $profile,
+            'slots'            => $this->getGroupedSlots($profile->id),
+            'selectedDoctorId' => $profile->id,
+        ]);
     }
 
     public function generateSlots(Request $request)
     {
-        $request->validate([
-            'date' => 'required|date|after_or_equal:today',
-            'start_time' => 'required|date_format:H:i',
-            'end_time' => 'required|date_format:H:i|after:start_time',
-            'slot_minutes' => 'required|integer|in:10,15,20,30,45,60',
-        ]);
-
         $user = Auth::user();
         $profile = DoctorProfile::where('user_id', $user->id)->firstOrFail();
 
-        $date = $request->date;
-        $slotLen = (int) $request->slot_minutes;
-        $current = Carbon::parse("$date {$request->start_time}");
-        $endLimit  = Carbon::parse("$date {$request->end_time}");
+        return $this->processGenerateSlots($request, $profile, '/GodzinyPracy');
+    }
 
-        $created = 0;
-        while ($current->copy()->addMinutes($slotLen)->lte($endLimit)) {
-            $slotEnd = $current->copy()->addMinutes($slotLen);
+    public function adminGenerateSlots(Request $request)
+    {
+        $request->validate([
+            'doctor_id' => 'required|integer|exists:doctor_profiles,id',
+        ]);
 
-            $exists = AvailabilitySlot::where('doctor_id', $profile->id)
-                ->where('start_time', $current)
-                ->exists();
+        $profile = DoctorProfile::where('id', $request->doctor_id)
+            ->where('is_accepted', true)
+            ->firstOrFail();
 
-            if (!$exists) {
-                AvailabilitySlot::create([
-                    'doctor_id' => $profile->id,
-                    'start_time' => $current,
-                    'end_time' => $slotEnd,
-                    'is_booked' => false,
-                ]);
-                $created++;
+        return $this->processGenerateSlots(
+            $request,
+            $profile,
+            '/admin/godziny-pracy?doctor_id=' . $profile->id
+        );
+    }
+
+    private function processGenerateSlots(Request $request, DoctorProfile $profile, string $redirectUrl)
+    {
+        $request->validate([
+            'date_from'    => 'required|date|after_or_equal:today',
+            'date_to'      => 'required|date|after_or_equal:date_from',
+            'start_time'   => 'required|date_format:H:i',
+            'end_time'     => 'required|date_format:H:i|after:start_time',
+            'slot_minutes' => 'required|integer|in:10,15,20,30,45,60',
+        ]);
+
+        $dateFrom   = Carbon::parse($request->date_from)->startOfDay();
+        $dateTo     = Carbon::parse($request->date_to)->startOfDay();
+        $weekdays   = [0, 1, 2, 3, 4, 5, 6];
+        $slotLen    = (int) $request->slot_minutes;
+        $created    = 0;
+        $daysCount  = 0;
+
+        $currentDate = $dateFrom->copy();
+        while ($currentDate->lte($dateTo)) {
+            if (in_array($currentDate->dayOfWeek, $weekdays, true)) {
+                $daysCount++;
+                $date = $currentDate->toDateString();
+                $slotStart = Carbon::parse("$date {$request->start_time}");
+                $endLimit  = Carbon::parse("$date {$request->end_time}");
+
+                while ($slotStart->copy()->addMinutes($slotLen)->lte($endLimit)) {
+                    $slotEnd = $slotStart->copy()->addMinutes($slotLen);
+
+                    $exists = AvailabilitySlot::where('doctor_id', $profile->id)
+                        ->where('start_time', $slotStart)
+                        ->exists();
+
+                    if (!$exists) {
+                        AvailabilitySlot::create([
+                            'doctor_id'  => $profile->id,
+                            'start_time' => $slotStart,
+                            'end_time'   => $slotEnd,
+                            'is_booked'  => false,
+                        ]);
+                        $created++;
+                    }
+
+                    $slotStart->addMinutes($slotLen);
+                }
             }
-
-            $current->addMinutes($slotLen);
+            $currentDate->addDay();
         }
 
-        return redirect('/GodzinyPracy')
-            ->with('success', "Dodano $created slotów na dzień $date.");
+        return redirect($redirectUrl)
+            ->with('success', "Dodano $created slotów na $daysCount dni.");
     }
 
     public function deleteSlot($id)
     {
         $user    = Auth::user();
         $profile = DoctorProfile::where('user_id', $user->id)->firstOrFail();
-        $slot    = AvailabilitySlot::where('id', $id)
+
+        return $this->processDeleteSlot($profile, $id, '/GodzinyPracy');
+    }
+
+    public function adminDeleteSlot(Request $request, $id)
+    {
+        $request->validate([
+            'doctor_id' => 'required|integer|exists:doctor_profiles,id',
+        ]);
+
+        $profile = DoctorProfile::where('id', $request->doctor_id)
+            ->where('is_accepted', true)
+            ->firstOrFail();
+
+        return $this->processDeleteSlot(
+            $profile,
+            $id,
+            '/admin/godziny-pracy?doctor_id=' . $profile->id
+        );
+    }
+
+    private function processDeleteSlot(DoctorProfile $profile, $id, string $redirectUrl)
+    {
+        $slot = AvailabilitySlot::where('id', $id)
             ->where('doctor_id', $profile->id)
             ->where('is_booked', false)
             ->firstOrFail();
         $slot->delete();
 
-        return redirect('/GodzinyPracy')->with('success', 'Slot usunięty.');
+        return redirect($redirectUrl)->with('success', 'Slot usunięty.');
     }
 
-
+    private function getGroupedSlots(int $doctorId)
+    {
+        return AvailabilitySlot::where('doctor_id', $doctorId)
+            ->where('start_time', '>=', Carbon::today())
+            ->orderBy('start_time')
+            ->with('appointment.patient')
+            ->get()
+            ->groupBy(fn ($s) => $s->start_time->toDateString());
+    }
 
     public function bookingIndex()
     {
         $doctors = DoctorProfile::where('is_accepted', true)
-            ->whereHas('slots', fn($q) => $q->where('is_booked', false)->where('start_time', '>=', now()))
+            ->whereHas('slots', fn ($q) => $q->where('is_booked', false)->where('start_time', '>=', now()))
             ->with('user')
             ->get();
 
@@ -105,7 +193,7 @@ class ScheduleController extends Controller
             ->where('start_time', '>=', now())
             ->orderBy('start_time')
             ->get()
-            ->groupBy(fn($s) => $s->start_time->toDateString());
+            ->groupBy(fn ($s) => $s->start_time->toDateString());
 
         return view('booking.doctor', compact('doctor', 'slots'));
     }
@@ -140,10 +228,10 @@ class ScheduleController extends Controller
                 $slot->save();
 
                 Appointment::create([
-                    'slot_id' => $slot->id,
+                    'slot_id'    => $slot->id,
                     'patient_id' => $user->id,
                     'service_id' => $service->id,
-                    'status' => 'pending',
+                    'status'     => 'pending',
                 ]);
             });
         } catch (\Throwable $e) {

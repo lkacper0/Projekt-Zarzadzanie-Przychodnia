@@ -18,10 +18,11 @@ class AdminController extends Controller
         $query = User::orderBy('id', 'asc');
 
         if ($search) {
-            $query->where(function ($q) use ($search) {
-                $q->where('first_name', 'like', '%' . $search . '%')
-                  ->orWhere('last_name', 'like', '%' . $search . '%')
-                  ->orWhere('email', 'like', '%' . $search . '%');
+            $term = '%' . mb_strtolower($search) . '%';
+            $query->where(function ($q) use ($term) {
+                $q->whereRaw('LOWER(first_name) LIKE ?', [$term])
+                  ->orWhereRaw('LOWER(last_name) LIKE ?', [$term])
+                  ->orWhereRaw('LOWER(email) LIKE ?', [$term]);
             });
         }
 

@@ -247,14 +247,91 @@ class DoctorController extends Controller
     {
         $user = Auth::user();
         $profile = DoctorProfile::where('user_id', $user->id)->firstOrFail();
-        $appointments = \App\Models\Appointment::whereHas('slot', function ($query) use ($profile) {
-                $query->where('doctor_id', $profile->id);
-            })
-            ->with(['patient', 'slot', 'service'])
+
+        $baseQuery = fn () => \App\Models\Appointment::whereHas('slot', function ($query) use ($profile) {
+            $query->where('doctor_id', $profile->id);
+        })->with(['patient', 'slot', 'service']);
+
+        $pendingAppointments = $baseQuery()
+            ->where('status', 'pending')
             ->orderBy('id', 'desc')
             ->get();
 
-        return view('doctor.visits', compact('profile', 'appointments'));
+        $confirmedAppointments = $baseQuery()
+            ->where('status', 'confirmed')
+            ->orderBy('id', 'desc')
+            ->get();
+
+        $completedAppointments = $baseQuery()
+            ->where('status', 'completed')
+            ->orderBy('id', 'desc')
+            ->get();
+
+        $cancelledAppointments = $baseQuery()
+            ->where('status', 'cancelled')
+            ->orderBy('id', 'desc')
+            ->get();
+
+        return view('doctor.visits', compact(
+            'profile',
+            'pendingAppointments',
+            'confirmedAppointments',
+            'completedAppointments',
+            'cancelledAppointments'
+        ));
+    }
+
+    public function confirmVisit($id)
+    {
+        $appointment = $this->findDoctorAppointment($id);
+        $appointment->status = 'confirmed';
+        $appointment->save();
+
+        return redirect('/ListaWizyt')->with('success', 'Wizyta została potwierdzona.');
+    }
+
+    public function rejectVisit($id)
+    {
+        $appointment = $this->findDoctorAppointment($id);
+
+        if ($appointment->status === 'completed') {
+            return redirect('/ListaWizyt')->with('error', 'Nie można odwołać zakończonej wizyty.');
+        }
+
+        $slot = $appointment->slot;
+        if ($slot) {
+            $slot->is_booked = false;
+            $slot->save();
+        }
+
+        $appointment->status = 'cancelled';
+        $appointment->save();
+
+        return redirect('/ListaWizyt')->with('success', 'Wizyta została odwołana.');
+    }
+
+    public function completeVisit(Request $request, $id)
+    {
+        $appointment = $this->findDoctorAppointment($id);
+
+        if (!in_array($appointment->status, ['pending', 'confirmed'], true)) {
+            return redirect('/ListaWizyt')->with('error', 'Tej wizyty nie można zakończyć.');
+        }
+
+        $appointment->status = 'completed';
+        $appointment->save();
+
+        return redirect('/ListaWizyt')->with('success', 'Wizyta zakończona.');
+    }
+
+    private function findDoctorAppointment($id): \App\Models\Appointment
+    {
+        $user = Auth::user();
+        $profile = DoctorProfile::where('user_id', $user->id)->firstOrFail();
+
+        return \App\Models\Appointment::whereHas('slot', function ($query) use ($profile) {
+            $query->where('doctor_id', $profile->id);
+        })->findOrFail($id);
     }
 
     public function workingHours()
@@ -279,6 +356,51 @@ class DoctorController extends Controller
             ->get();
 
         return view('doctor.records', compact('profile', 'patients'));
+    }
+
+    public function patientDiagnosis($patientId)
+    {
+        $user = Auth::user();
+        $profile = DoctorProfile::where('user_id', $user->id)->firstOrFail();
+        
+        $patient = \App\Models\User::findOrFail($patientId);
+
+        $appointmentsToDiagnose = \App\Models\Appointment::where('patient_id', $patientId)
+            ->whereHas('slot', function($q) use ($profile) {
+                $q->where('doctor_id', $profile->id);
+            })
+            ->where('status', 'completed')
+            ->where(function($q) {
+                $q->whereNull('medical_note')->orWhere('medical_note', '');
+            })
+            ->with(['slot', 'service'])
+            ->orderBy('id', 'desc')
+            ->get();
+
+        return view('doctor.patient_diagnosis', compact('profile', 'patient', 'appointmentsToDiagnose'));
+    }
+
+    public function saveDiagnosis(Request $request, $patientId)
+    {
+        $request->validate([
+            'appointment_id' => 'required|integer|exists:appointments,id',
+            'medical_note' => 'required|string|max:5000',
+        ]);
+
+        $user = Auth::user();
+        $profile = DoctorProfile::where('user_id', $user->id)->firstOrFail();
+
+        $appointment = \App\Models\Appointment::where('patient_id', $patientId)
+            ->where('id', $request->appointment_id)
+            ->whereHas('slot', function($q) use ($profile) {
+                $q->where('doctor_id', $profile->id);
+            })
+            ->firstOrFail();
+
+        $appointment->medical_note = $request->medical_note;
+        $appointment->save();
+
+        return redirect('/HistoriaPacjenta')->with('success', 'Diagnoza została pomyślnie wystawiona.');
     }
 
     public function history()

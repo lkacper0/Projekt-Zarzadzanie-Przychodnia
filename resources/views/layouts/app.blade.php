@@ -19,7 +19,8 @@
             'Rezerwacja', 'Rezerwacja/*',
             'Lekarze', 'DiagnozaZalecenia',
             'PanelLekarza', 'PanelLekarza/*',
-            'ListaWizyt', 'GodzinyPracy', 'Kartoteka', 'HistoriaPacjenta'
+            'ListaWizyt', 'GodzinyPracy', 'Kartoteka', 'HistoriaPacjenta',
+            'admin', 'admin/*'
         );
         $user = auth()->user();
     @endphp

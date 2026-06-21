@@ -34,6 +34,7 @@
                             <th style="padding: 12px 10px;">Imię i Nazwisko</th>
                             <th style="padding: 12px 10px;">E-mail</th>
                             <th style="padding: 12px 10px;">PESEL</th>
+                            <th style="padding: 12px 10px;">Akcje</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -47,6 +48,9 @@
                                 </td>
                                 <td style="padding: 16px 10px; font-family: monospace;">
                                     {{ $patient->pesel ?? 'brak danych' }}
+                                </td>
+                                <td style="padding: 16px 10px;">
+                                    <a href="{{ url('/PanelLekarza/pacjent/' . $patient->id . '/diagnoza') }}" class="btn btn-primary btn-sm" style="background-color: #4a90e2; color: white; padding: 6px 12px; border-radius: 4px; text-decoration: none; font-size: 0.85rem;">Wystaw diagnozę</a>
                                 </td>
                             </tr>
                         @endforeach

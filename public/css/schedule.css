@@ -24,6 +24,199 @@
 }
 
 
+.weekdays-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.weekday-tile {
+    position: relative;
+    cursor: pointer;
+}
+
+.weekday-tile input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.weekday-tile span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 52px;
+    height: 52px;
+    border-radius: 10px;
+    background: #f7fafc;
+    border: 2px solid #cbd5e0;
+    color: #4a5568;
+    font-weight: 700;
+    font-size: 0.85rem;
+    transition: all 0.15s;
+    user-select: none;
+}
+
+.weekday-tile input:checked + span {
+    background: #4a90e2;
+    border-color: #2b6cb0;
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(74, 144, 226, 0.35);
+}
+
+.weekday-tile:hover span {
+    border-color: #4a90e2;
+}
+
+.visit-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #e2e8f0;
+    padding-bottom: 12px;
+}
+
+.visit-tab {
+    background: #f7fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: #4a5568;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.visit-tab.active {
+    background: #4a90e2;
+    border-color: #2b6cb0;
+    color: #fff;
+}
+
+.visit-tab-panel {
+    display: none;
+}
+
+.visit-tab-panel.active {
+    display: block;
+}
+
+.patient-tabs {
+    margin-bottom: 24px;
+}
+
+.visits-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 0.95rem;
+}
+
+.visits-table th {
+    padding: 12px 10px;
+    border-bottom: 2px solid #e2e8f0;
+    color: #1a2b4a;
+}
+
+.visits-table td {
+    padding: 16px 10px;
+    border-bottom: 1px solid #edf2f7;
+    vertical-align: top;
+}
+
+.visit-patient {
+    font-weight: 600;
+}
+
+.visit-pesel {
+    font-size: 0.78rem;
+    color: #718096;
+    font-weight: normal;
+}
+
+.visit-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.badge-pending { background: #fff3cd; color: #856404; }
+.badge-confirmed { background: #ebf8ff; color: #2b6cb0; }
+.badge-completed { background: #d4edda; color: #155724; }
+.badge-cancelled { background: #f8d7da; color: #721c24; }
+
+.visit-actions {
+    min-width: 200px;
+}
+
+.visit-actions form,
+.visit-actions button {
+    margin: 2px 0;
+}
+
+.btn-sm {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.btn-success { background: #48bb78; color: #fff; }
+.btn-danger { background: #fc8181; color: #fff; }
+.btn-primary { background: #4a90e2; color: #fff; }
+
+.complete-form {
+    margin-top: 10px;
+    padding: 12px;
+    background: #f7fafc;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+}
+
+.complete-form textarea {
+    width: 100%;
+    margin: 8px 0;
+    padding: 8px;
+    border: 1px solid #cbd5e0;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 0.9rem;
+    resize: vertical;
+}
+
+.complete-form label {
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: #1a2b4a;
+}
+
+.visit-note {
+    font-size: 0.85rem;
+    color: #4a5568;
+    white-space: pre-line;
+    max-width: 280px;
+}
+
+.visit-empty {
+    text-align: center;
+    padding: 40px 10px;
+    color: #a0aec0;
+}
+
+.visit-empty span {
+    font-size: 40px;
+    display: block;
+    margin-bottom: 15px;
+}
+
+
 .day-block {
     margin-bottom: 28px;
 }

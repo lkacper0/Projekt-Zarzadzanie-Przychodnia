@@ -24,6 +24,8 @@ class PatientController extends Controller
         $user = Auth::user();
 
         $upcomingAppointments = Appointment::where('patient_id', $user->id)
+            ->where('status', '!=', 'completed')
+            ->where('status', '!=', 'cancelled')
             ->whereHas('slot', function ($query) {
                 $query->where('start_time', '>=', now());
             })
@@ -31,7 +33,14 @@ class PatientController extends Controller
             ->orderBy('id', 'asc')
             ->get();
 
+        $completedAppointments = Appointment::where('patient_id', $user->id)
+            ->where('status', 'completed')
+            ->with(['slot.doctor.user', 'service'])
+            ->orderBy('id', 'desc')
+            ->get();
+
         $pastAppointments = Appointment::where('patient_id', $user->id)
+            ->where('status', '!=', 'completed')
             ->whereHas('slot', function ($query) {
                 $query->where('start_time', '<', now());
             })
@@ -39,7 +48,7 @@ class PatientController extends Controller
             ->orderBy('id', 'desc')
             ->get();
 
-        return view('patient.visits', compact('upcomingAppointments', 'pastAppointments'));
+        return view('patient.visits', compact('upcomingAppointments', 'completedAppointments', 'pastAppointments'));
     }
 
     public function applyToBeDoctor(Request $request)
@@ -108,11 +117,12 @@ class PatientController extends Controller
             ->with(['user', 'specializations', 'tags']);
 
         if ($search) {
-            $query->where(function ($q) use ($search) {
-                $q->where('bio', 'like', '%' . $search . '%')
-                  ->orWhereHas('user', function ($qu) use ($search) {
-                      $qu->where('first_name', 'like', '%' . $search . '%')
-                         ->orWhere('last_name', 'like', '%' . $search . '%');
+            $term = '%' . mb_strtolower($search) . '%';
+            $query->where(function ($q) use ($term) {
+                $q->whereRaw('LOWER(bio) LIKE ?', [$term])
+                  ->orWhereHas('user', function ($qu) use ($term) {
+                      $qu->whereRaw('LOWER(first_name) LIKE ?', [$term])
+                         ->orWhereRaw('LOWER(last_name) LIKE ?', [$term]);
                   });
             });
         }
