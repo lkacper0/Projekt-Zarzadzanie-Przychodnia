@@ -157,6 +157,49 @@
             border-color: #e2e8f0;
             cursor: not-allowed;
         }
+        .tag-checkboxes-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 5px 0;
+        }
+        .tag-checkbox-label {
+            cursor: pointer;
+            margin: 0;
+        }
+        .tag-checkbox-badge {
+            display: inline-block;
+            padding: 8px 14px;
+            border-radius: 20px;
+            background-color: #f1f5f9;
+            color: #475569;
+            font-size: 13px;
+            font-weight: 600;
+            border: 1.5px solid #cbd5e1;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+        .tag-checkbox-input {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+            pointer-events: none;
+        }
+        .tag-checkbox-input:checked + .tag-checkbox-badge {
+            background-color: #e0f2fe;
+            color: #0369a1;
+            border-color: #38bdf8;
+            box-shadow: 0 2px 6px rgba(56, 189, 248, 0.2);
+        }
+        .tag-checkbox-badge:hover {
+            background-color: #e2e8f0;
+            border-color: #94a3b8;
+        }
+        .tag-checkbox-input:checked + .tag-checkbox-badge:hover {
+            background-color: #bae6fd;
+            border-color: #0284c7;
+        }
     </style>
 @endpush
 
@@ -181,14 +224,18 @@
                     </select>
                 </div>
 
-                <div class="form-group" style="margin-bottom: 0;">
-                    <label for="tag" style="font-weight: 600; color: #475569; margin-bottom: 6px; display: block; font-size: 13px;">Tagi / Umowa</label>
-                    <select name="tag" id="tag" class="form-control" style="padding: 11px;">
-                        <option value="">Dowolna umowa / tag</option>
+                <div class="form-group" style="margin-bottom: 0; grid-column: span 1;">
+                    <label style="font-weight: 600; color: #475569; margin-bottom: 6px; display: block; font-size: 13px;">Tagi / Umowa</label>
+                    <div class="tag-checkboxes-container">
                         @foreach($tags as $t)
-                            <option value="{{ $t->id }}" {{ $tagId == $t->id ? 'selected' : '' }}>{{ $t->name }}</option>
+                            <div style="display: inline-block;">
+                                <input type="checkbox" name="tags[]" id="tag_{{ $t->id }}" value="{{ $t->id }}" {{ (isset($tagIds) && is_array($tagIds) && in_array($t->id, $tagIds)) || $tagId == $t->id ? 'checked' : '' }} class="tag-checkbox-input">
+                                <label for="tag_{{ $t->id }}" class="tag-checkbox-badge">
+                                    {{ $t->name }}
+                                </label>
+                            </div>
                         @endforeach
-                    </select>
+                    </div>
                 </div>
 
                 <div class="form-group" style="margin-bottom: 0;">

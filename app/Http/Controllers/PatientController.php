@@ -111,18 +111,29 @@ class PatientController extends Controller
         $search = $request->get('search');
         $specializationId = $request->get('specialization');
         $tagId = $request->get('tag');
+        $tagIds = $request->get('tags');
+        if ($tagId && !is_array($tagIds)) {
+            $tagIds = [$tagId];
+        } elseif (!is_array($tagIds)) {
+            $tagIds = [];
+        }
+        $tagIds = array_map('intval', $tagIds);
+        
         $sort = $request->get('sort', 'alphabetical');
 
         $query = DoctorProfile::where('is_accepted', true)
             ->with(['user', 'specializations', 'tags']);
 
         if ($search) {
-            $term = '%' . mb_strtolower($search) . '%';
-            $query->where(function ($q) use ($term) {
-                $q->whereRaw('LOWER(bio) LIKE ?', [$term])
-                  ->orWhereHas('user', function ($qu) use ($term) {
-                      $qu->whereRaw('LOWER(first_name) LIKE ?', [$term])
-                         ->orWhereRaw('LOWER(last_name) LIKE ?', [$term]);
+            $driver = \DB::connection()->getDriverName();
+            $like = $driver === 'pgsql' ? 'ilike' : 'like';
+            $term = '%' . $search . '%';
+
+            $query->where(function ($q) use ($term, $like) {
+                $q->where('bio', $like, $term)
+                  ->orWhereHas('user', function ($qu) use ($term, $like) {
+                      $qu->where('first_name', $like, $term)
+                         ->orWhere('last_name', $like, $term);
                   });
             });
         }
@@ -133,9 +144,9 @@ class PatientController extends Controller
             });
         }
 
-        if ($tagId) {
-            $query->whereHas('tags', function ($q) use ($tagId) {
-                $q->where('tag_id', $tagId);
+        if (!empty($tagIds)) {
+            $query->whereHas('tags', function ($q) use ($tagIds) {
+                $q->whereIn('tag_id', $tagIds);
             });
         }
 
@@ -160,7 +171,7 @@ class PatientController extends Controller
         $specializations = \App\Models\Specialization::orderBy('name', 'asc')->get();
         $tags = \App\Models\Tag::orderBy('name', 'asc')->get();
 
-        return view('patient.search_doctors', compact('doctors', 'specializations', 'tags', 'search', 'specializationId', 'tagId', 'sort'));
+        return view('patient.search_doctors', compact('doctors', 'specializations', 'tags', 'search', 'specializationId', 'tagId', 'tagIds', 'sort'));
     }
 
     public function editProfile()
