@@ -104,6 +104,8 @@ Route::middleware(['auth', 'role:patient'])->group(function () {
     Route::get('/Rezerwacja', [ScheduleController::class, 'bookingIndex']);
     Route::get('/Rezerwacja/lekarz/{id}', [ScheduleController::class, 'bookingDoctor']);
     Route::post('/Rezerwacja/slot/{id}', [ScheduleController::class, 'bookSlot']);
+
+    Route::post('/ListaWizyt/{id}/odwolaj', [PatientController::class, 'cancelVisit']);
 });
 
 Route::middleware(['auth', 'role:patient,doctor,admin'])->group(function () {

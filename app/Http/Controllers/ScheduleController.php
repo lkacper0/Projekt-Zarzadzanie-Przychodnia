@@ -102,6 +102,14 @@ class ScheduleController extends Controller
                 $endLimit  = Carbon::parse("$date {$request->end_time}");
 
                 while ($slotStart->copy()->addMinutes($slotLen)->lte($endLimit)) {
+                    $nowInWarsaw = \Carbon\Carbon::now('Europe/Warsaw');
+                    $slotStartInWarsaw = \Carbon\Carbon::parse("$date " . $slotStart->format('H:i'), 'Europe/Warsaw');
+
+                    if ($slotStartInWarsaw->lt($nowInWarsaw)) {
+                        $slotStart->addMinutes($slotLen);
+                        continue;
+                    }
+
                     $slotEnd = $slotStart->copy()->addMinutes($slotLen);
 
                     $exists = AvailabilitySlot::where('doctor_id', $profile->id)

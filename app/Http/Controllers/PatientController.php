@@ -205,4 +205,25 @@ class PatientController extends Controller
 
         return redirect('/PanelUzytkownika')->with('success', 'Twoje dane zostały pomyślnie zaktualizowane!');
     }
+
+    public function cancelVisit($id)
+    {
+        $user = Auth::user();
+        $appointment = Appointment::where('id', $id)
+            ->where('patient_id', $user->id)
+            ->whereIn('status', ['pending', 'confirmed'])
+            ->firstOrFail();
+
+        \Illuminate\Support\Facades\DB::transaction(function () use ($appointment) {
+            $appointment->status = 'cancelled';
+            $appointment->save();
+
+            if ($appointment->slot) {
+                $appointment->slot->is_booked = false;
+                $appointment->slot->save();
+            }
+        });
+
+        return redirect('/ListaWizyt')->with('success', 'Wizyta została pomyślnie odwołana.');
+    }
 }

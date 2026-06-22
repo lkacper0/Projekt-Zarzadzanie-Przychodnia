@@ -49,6 +49,10 @@
                                 @csrf
                                 <button type="submit" class="btn btn-primary btn-sm">Zakończ wizytę</button>
                             </form>
+                            <form action="{{ url('/ListaWizyt/'.$app->id.'/odrzuc') }}" method="POST" style="display:inline;" onsubmit="return confirm('Odwołać tę wizytę?');">
+                                @csrf
+                                <button type="submit" class="btn btn-danger btn-sm">Odwołaj</button>
+                            </form>
                         </td>
                     @elseif($showActions === 'confirmed')
                         <td class="visit-actions">

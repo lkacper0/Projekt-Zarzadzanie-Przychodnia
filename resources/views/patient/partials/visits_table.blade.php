@@ -7,6 +7,7 @@
                 <th>Data i godzina</th>
                 <th>Cena</th>
                 <th>Status</th>
+                <th>Akcje</th>
             </tr>
         </thead>
         <tbody>
@@ -45,6 +46,16 @@
                             }
                         @endphp
                         <span class="badge-status {{ $statusClass }}">{{ $statusText }}</span>
+                    </td>
+                    <td>
+                        @if($app->status === 'pending' || $app->status === 'confirmed')
+                            <form action="{{ url('/ListaWizyt/' . $app->id . '/odwolaj') }}" method="POST" style="display:inline-block;" onsubmit="return confirm('Czy na pewno chcesz odwołać tę wizytę?');">
+                                @csrf
+                                <button type="submit" class="btn-cancel" style="background-color: #ef4444; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 12px;">Odwołaj</button>
+                            </form>
+                        @else
+                            -
+                        @endif
                     </td>
                 </tr>
             @endforeach
