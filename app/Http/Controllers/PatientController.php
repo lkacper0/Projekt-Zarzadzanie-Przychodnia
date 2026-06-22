@@ -35,7 +35,7 @@ class PatientController extends Controller
 
         $completedAppointments = Appointment::where('patient_id', $user->id)
             ->where('status', 'completed')
-            ->with(['slot.doctor.user', 'service'])
+            ->with(['slot.doctor.user', 'service', 'review'])
             ->orderBy('id', 'desc')
             ->get();
 
@@ -215,5 +215,55 @@ class PatientController extends Controller
         $user->save();
 
         return redirect('/PanelUzytkownika')->with('success', 'Twoje dane zostały pomyślnie zaktualizowane!');
+    }
+
+    public function showReviewForm($id)
+    {
+        $user = Auth::user();
+        $appointment = Appointment::where('patient_id', $user->id)
+            ->where('status', 'completed')
+            ->with(['slot.doctor.user', 'service'])
+            ->findOrFail($id);
+
+        $exists = \App\Models\Review::where('appointment_id', $id)->exists();
+        if ($exists) {
+            return redirect('/ListaWizyt')->with('error', 'Już dodałeś opinię dla tej wizyty.');
+        }
+
+        return view('patient.add_review', compact('appointment'));
+    }
+
+    public function storeReview(Request $request, $id)
+    {
+        $user = Auth::user();
+        $appointment = Appointment::where('patient_id', $user->id)
+            ->where('status', 'completed')
+            ->findOrFail($id);
+
+        $exists = \App\Models\Review::where('appointment_id', $id)->exists();
+        if ($exists) {
+            return redirect('/ListaWizyt')->with('error', 'Już dodałeś opinię dla tej wizyty.');
+        }
+
+        $request->validate([
+            'rating' => 'required|integer|min:1|max:5',
+            'comment' => 'nullable|string|max:1000',
+        ]);
+
+        \App\Models\Review::create([
+            'appointment_id' => $appointment->id,
+            'patient_id' => $user->id,
+            'doctor_id' => $appointment->slot->doctor_id,
+            'rating' => $request->rating,
+            'comment' => $request->comment,
+        ]);
+
+        $doctorId = $appointment->slot->doctor_id;
+        $avgRating = \App\Models\Review::where('doctor_id', $doctorId)->avg('rating');
+        $doctorProfile = DoctorProfile::findOrFail($doctorId);
+        $doctorProfile->avg_rating = round($avgRating, 2);
+        $doctorProfile->save();
+
+        return redirect('/ListaWizyt')->with('success', 'Opinia została dodana pomyślnie!');
     }
 }

@@ -31,4 +31,9 @@ class Appointment extends Model
     {
         return $this->belongsTo(Service::class, 'service_id');
     }
+
+    public function review()
+    {
+        return $this->hasOne(Review::class, 'appointment_id');
+    }
 }

@@ -7,6 +7,7 @@
                 <th>Data i godzina</th>
                 <th>Cena</th>
                 <th>Status</th>
+                <th>Akcje</th>
             </tr>
         </thead>
         <tbody>
@@ -45,6 +46,17 @@
                             }
                         @endphp
                         <span class="badge-status {{ $statusClass }}">{{ $statusText }}</span>
+                    </td>
+                    <td>
+                        @if($app->status === 'completed')
+                            @if($app->review)
+                                <span class="badge-status" style="background-color: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; padding: 4px 8px; font-size: 12px; border-radius: 12px; font-weight: 600;">Ocena: {{ $app->review->rating }} ★</span>
+                            @else
+                                <a href="{{ url('/Wizyta/'.$app->id.'/Opinia') }}" class="btn-auth" style="padding: 6px 12px; font-size: 12px; width: auto; display: inline-block; text-decoration: none; box-shadow: none; border-radius: 8px;">Dodaj opinię</a>
+                            @endif
+                        @else
+                            -
+                        @endif
                     </td>
                 </tr>
             @endforeach
