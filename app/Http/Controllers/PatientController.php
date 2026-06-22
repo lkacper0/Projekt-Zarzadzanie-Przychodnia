@@ -145,9 +145,11 @@ class PatientController extends Controller
         }
 
         if (!empty($tagIds)) {
-            $query->whereHas('tags', function ($q) use ($tagIds) {
-                $q->whereIn('tag_id', $tagIds);
-            });
+            foreach ($tagIds as $tagId) {
+                $query->whereHas('tags', function ($q) use ($tagId) {
+                    $q->where('tag_id', $tagId);
+                });
+            }
         }
 
         if ($sort === 'rating') {
