@@ -185,7 +185,7 @@ class DoctorController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'nullable|string|max:1000',
             'price' => 'required|numeric|min:0',
-            'duration_minutes' => 'required|integer|min:5|max:480',
+            'duration_minutes' => 'required|integer|min:5|max:60',
         ]);
 
         $user    = Auth::user();
@@ -217,7 +217,7 @@ class DoctorController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'nullable|string|max:1000',
             'price' => 'required|numeric|min:0',
-            'duration_minutes' => 'required|integer|min:5|max:480',
+            'duration_minutes' => 'required|integer|min:5|max:60',
         ]);
 
         $user = Auth::user();
@@ -362,7 +362,7 @@ class DoctorController extends Controller
     {
         $user = Auth::user();
         $profile = DoctorProfile::where('user_id', $user->id)->firstOrFail();
-        
+
         $patient = \App\Models\User::findOrFail($patientId);
 
         $appointmentsToDiagnose = \App\Models\Appointment::where('patient_id', $patientId)

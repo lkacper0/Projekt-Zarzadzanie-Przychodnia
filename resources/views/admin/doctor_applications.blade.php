@@ -43,7 +43,7 @@
         <tbody>
 
             @forelse($applications as $app)
-            <div class="row" class="{{ $loop->index % 2 == 0 ? 'row-even' : 'row-odd' }}">
+            <div class="row" class="{{ $loop->index % 2 == 0 ? 'row-even' : 'row-odd' }}" style="border: 1px solid gray;">
 
                 <div class="col-1">{{ $app->id }}</div>
                 <div class="col-1">

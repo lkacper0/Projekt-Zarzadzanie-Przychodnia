@@ -51,14 +51,14 @@
 
         <thead>
             <div class="row">
-                <div class="col-1">Id</div>
-                <div class="col-1">Imię</div>
-                <div class="col-1">Nazwisko</div>
-                <div class="col-2">E-mail</div>
-                <div class="col-2">PESEL</div>
-                <div class="col-1">Rola</div>
-                <div class="col-1">Aktywny?</div>
-                <div class="col-3">Opcje</div>
+                <div class="col-1" style="border: 1px solid gray; background-color: #003366; color: white">Id</div>
+                <div class="col-1" style="border: 1px solid gray; background-color: #003366; color: white">Imię</div>
+                <div class="col-1" style="border: 1px solid gray; background-color: #003366; color: white">Nazwisko</div>
+                <div class="col-2" style="border: 1px solid gray; background-color: #003366; color: white">E-mail</div>
+                <div class="col-2" style="border: 1px solid gray; background-color: #003366; color: white">PESEL</div>
+                <div class="col-1" style="border: 1px solid gray; background-color: #003366; color: white">Rola</div>
+                <div class="col-1" style="border: 1px solid gray; background-color: #003366; color: white">Aktywny?</div>
+                <div class="col-3" style="border: 1px solid gray; background-color: #003366; color: white">Opcje</div>
 
             </div>
         </thead>

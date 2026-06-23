@@ -43,7 +43,7 @@
         <div class="container">
             @forelse($reviews as $review)
 
-            <div class="row">
+            <div class="row" style="border: 1px solid gray;">
 
                 <div class="col-1">{{ $review->id }}</div>
                 <div class="col-2">
