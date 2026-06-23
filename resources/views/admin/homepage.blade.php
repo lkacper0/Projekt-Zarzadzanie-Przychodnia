@@ -16,6 +16,7 @@
         <a href="{{ url('/admin/specjalizacje') }}" class="nav-btn">Specjalizacje</a>
         <a href="{{ url('/admin/godziny-pracy') }}" class="nav-btn">Godziny Pracy</a>
         <a href="{{ url('/admin/wizyty') }}" class="nav-btn">Wizyty Lekarzy</a>
+        <a href="{{ url('/admin/uslugi') }}" class="nav-btn">Usługi</a>
         <a href="{{ url('/admin/homepage') }}" class="nav-btn active">Strona Główna</a>
         <a href="{{ url('/admin/about') }}" class="nav-btn">O nas</a>
         <a href="{{ url('/admin/contact') }}" class="nav-btn">Kontakt</a>

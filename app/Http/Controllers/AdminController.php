@@ -68,8 +68,8 @@ class AdminController extends Controller
     {
         $user = User::findOrFail($id);
         $profile = \App\Models\DoctorProfile::where('user_id', $user->id)->first();
-        return view('admin.edit', compact('user', 'profile'));
-
+        $allTags = \App\Models\Tag::orderBy('name')->get();
+        return view('admin.edit', compact('user', 'profile', 'allTags'));
     }
 
     public function update(Request $request, $id)
@@ -86,6 +86,9 @@ class AdminController extends Controller
             'role' => 'required|in:patient,doctor,admin',
             'password' => 'nullable|string|min:6',
             'bio' => 'nullable|string|max:2000',
+            'tags' => 'nullable|array',
+            'tags.*' => 'integer|exists:tags,id',
+            'new_tag' => 'nullable|string|max:60',
         ]);
 
 
@@ -115,6 +118,14 @@ class AdminController extends Controller
                 $profile->bio = $request->bio;
                 $profile->save();
             }
+
+            $tagIds = $request->input('tags', []);
+            if ($request->filled('new_tag')) {
+                $name = trim($request->new_tag);
+                $tag = \App\Models\Tag::firstOrCreate(['name' => $name]);
+                $tagIds[] = $tag->id;
+            }
+            $profile->tags()->sync(array_unique($tagIds));
         }
 
         return redirect('/admin')->with('success', 'Dane zaktualizowane!');
@@ -294,5 +305,96 @@ class AdminController extends Controller
             'completedAppointments',
             'cancelledAppointments'
         ));
+    }
+
+    public function adminDoctorServices(Request $request)
+    {
+        $doctors = \App\Models\DoctorProfile::where('is_accepted', true)
+            ->with('user')
+            ->orderBy('id')
+            ->get();
+
+        $selectedDoctorId = $request->get('doctor_id', $doctors->first()?->id);
+        $profile = $doctors->firstWhere('id', (int) $selectedDoctorId) ?? $doctors->first();
+
+        if (!$profile) {
+            return view('admin.uslugi', [
+                'doctors' => collect(),
+                'profile' => null,
+                'selectedDoctorId' => null,
+                'services' => collect(),
+            ]);
+        }
+
+        $services = \App\Models\Service::where('doctor_id', $profile->id)
+            ->orderBy('id', 'asc')
+            ->get();
+
+        return view('admin.uslugi', compact('doctors', 'profile', 'selectedDoctorId', 'services'));
+    }
+
+    public function adminCreateService(Request $request)
+    {
+        $doctorId = $request->query('doctor_id');
+        $profile = \App\Models\DoctorProfile::with('user')->findOrFail($doctorId);
+
+        return view('admin.uslugi_create', compact('profile'));
+    }
+
+    public function adminStoreService(Request $request)
+    {
+        $request->validate([
+            'doctor_id' => 'required|integer|exists:doctor_profiles,id',
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string|max:1000',
+            'price' => 'required|numeric|min:0',
+            'duration_minutes' => 'required|integer|min:5|max:60',
+        ]);
+
+        \App\Models\Service::create([
+            'doctor_id' => $request->doctor_id,
+            'name' => $request->name,
+            'description' => $request->description,
+            'price' => $request->price,
+            'duration_minutes' => $request->duration_minutes,
+        ]);
+
+        return redirect('/admin/uslugi?doctor_id=' . $request->doctor_id)->with('success', 'Usługa została dodana!');
+    }
+
+    public function adminEditService($id)
+    {
+        $service = \App\Models\Service::findOrFail($id);
+        $profile = \App\Models\DoctorProfile::with('user')->findOrFail($service->doctor_id);
+
+        return view('admin.uslugi_edit', compact('service', 'profile'));
+    }
+
+    public function adminUpdateService(Request $request, $id)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string|max:1000',
+            'price' => 'required|numeric|min:0',
+            'duration_minutes' => 'required|integer|min:5|max:60',
+        ]);
+
+        $service = \App\Models\Service::findOrFail($id);
+        $service->name = $request->name;
+        $service->description = $request->description;
+        $service->price = $request->price;
+        $service->duration_minutes = $request->duration_minutes;
+        $service->save();
+
+        return redirect('/admin/uslugi?doctor_id=' . $service->doctor_id)->with('success', 'Usługa zaktualizowana!');
+    }
+
+    public function adminDestroyService($id)
+    {
+        $service = \App\Models\Service::findOrFail($id);
+        $doctorId = $service->doctor_id;
+        $service->delete();
+
+        return redirect('/admin/uslugi?doctor_id=' . $doctorId)->with('success', 'Usługa usunięta!');
     }
 }

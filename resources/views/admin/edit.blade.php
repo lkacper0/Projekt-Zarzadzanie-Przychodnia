@@ -70,6 +70,28 @@
             <textarea name="bio" id="bio" class="form-control" rows="5">{{ old('bio', $profile->bio ?? '') }}</textarea>
         </div>
 
+        <div class="form-group" id="tags-group" style="display: {{ old('role', $user->role) == 'doctor' ? 'block' : 'none' }};">
+            <label>Tagi lekarza:</label>
+            @if($allTags->isNotEmpty())
+                <div class="tags-checkbox-grid">
+                    @foreach($allTags as $tag)
+                        <label class="tag-checkbox-label">
+                            <input type="checkbox" name="tags[]" value="{{ $tag->id }}"
+                                {{ ($profile && $profile->tags->contains('id', $tag->id)) ? 'checked' : '' }}>
+                            <span>{{ $tag->name }}</span>
+                        </label>
+                    @endforeach
+                </div>
+            @else
+                <p class="tags-empty">Brak dostępnych tagów w systemie.</p>
+            @endif
+
+            <div style="margin-top: 15px;">
+                <label for="new_tag">Dodaj nowy tag (opcjonalnie):</label>
+                <input type="text" name="new_tag" id="new_tag" class="form-control" placeholder="np. Kardiologia dziecięca">
+            </div>
+        </div>
+
         <div class="form-group mb-20">
 
             <label for="password">Hasło:</label>
@@ -93,12 +115,15 @@
 document.addEventListener('DOMContentLoaded', function() {
     const roleSelect = document.getElementById('role');
     const bioGroup = document.getElementById('bio-group');
+    const tagsGroup = document.getElementById('tags-group');
 
     function toggleBio() {
         if (roleSelect.value === 'doctor') {
             bioGroup.style.display = 'block';
+            tagsGroup.style.display = 'block';
         } else {
             bioGroup.style.display = 'none';
+            tagsGroup.style.display = 'none';
         }
     }
 

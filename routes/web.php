@@ -52,6 +52,14 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
     Route::get('/admin/wizyty', [AdminController::class, 'adminDoctorVisits']);
 
+    Route::get('/admin/uslugi', [AdminController::class, 'adminDoctorServices']);
+    Route::get('/admin/uslugi/dodaj', [AdminController::class, 'adminCreateService']);
+    Route::post('/admin/uslugi', [AdminController::class, 'adminStoreService']);
+    Route::get('/admin/uslugi/{id}/edytuj', [AdminController::class, 'adminEditService']);
+    Route::put('/admin/uslugi/{id}', [AdminController::class, 'adminUpdateService']);
+    Route::delete('/admin/uslugi/{id}', [AdminController::class, 'adminDestroyService']);
+
+
     Route::get('/admin/{id}/edit', [AdminController::class, 'edit']);
     Route::put('/admin/{id}', [AdminController::class, 'update']);
     Route::delete('/admin/{id}', [AdminController::class, 'destroy']);
