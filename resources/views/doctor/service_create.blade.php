@@ -44,7 +44,7 @@
 
                 <div class="form-group">
                     <label for="duration_minutes">Czas trwania (min) *</label>
-                    <input type="number" name="duration_minutes" id="duration_minutes" value="{{ old('duration_minutes') }}" min="5" max="480" class="form-control" required placeholder="30">
+                    <input type="number" name="duration_minutes" id="duration_minutes" value="{{ old('duration_minutes') }}" min="5" max="60" class="form-control" required placeholder="30">
                 </div>
             </div>
 
