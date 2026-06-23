@@ -15,7 +15,6 @@ Route::get('/', function () {
 Route::get('/onas', function () {
     return view('about');
 });
-
 Route::get('/kontakt', function () {
     return view('kontakt');
 });
@@ -50,6 +49,8 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/godziny-pracy', [ScheduleController::class, 'adminSchedule']);
     Route::post('/admin/godziny-pracy/generuj', [ScheduleController::class, 'adminGenerateSlots']);
     Route::delete('/admin/godziny-pracy/slot/{id}/usun', [ScheduleController::class, 'adminDeleteSlot']);
+
+    Route::get('/admin/wizyty', [AdminController::class, 'adminDoctorVisits']);
 
     Route::get('/admin/{id}/edit', [AdminController::class, 'edit']);
     Route::put('/admin/{id}', [AdminController::class, 'update']);
@@ -87,10 +88,6 @@ Route::middleware(['auth', 'role:doctor'])->group(function () {
     Route::get('/PanelLekarza/pacjent/{id}/diagnoza', [DoctorController::class, 'patientDiagnosis']);
     Route::post('/PanelLekarza/pacjent/{id}/diagnoza', [DoctorController::class, 'saveDiagnosis']);
     Route::get('/HistoriaPacjenta', [DoctorController::class, 'history']);
-
-    Route::post('/ListaWizyt/{id}/potwierdz', [DoctorController::class, 'confirmVisit']);
-    Route::post('/ListaWizyt/{id}/odrzuc', [DoctorController::class, 'rejectVisit']);
-    Route::post('/ListaWizyt/{id}/zakoncz', [DoctorController::class, 'completeVisit']);
 });
 
 Route::middleware(['auth', 'role:patient'])->group(function () {
@@ -122,4 +119,8 @@ Route::middleware(['auth', 'role:patient,doctor,admin'])->group(function () {
 
         return app(PatientController::class)->visits();
     });
+
+    Route::post('/ListaWizyt/{id}/potwierdz', [DoctorController::class, 'confirmVisit']);
+    Route::post('/ListaWizyt/{id}/odrzuc', [DoctorController::class, 'rejectVisit']);
+    Route::post('/ListaWizyt/{id}/zakoncz', [DoctorController::class, 'completeVisit']);
 });

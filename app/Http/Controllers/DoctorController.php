@@ -287,7 +287,7 @@ class DoctorController extends Controller
         $appointment->status = 'confirmed';
         $appointment->save();
 
-        return redirect('/ListaWizyt')->with('success', 'Wizyta została potwierdzona.');
+        return redirect()->back()->with('success', 'Wizyta została potwierdzona.');
     }
 
     public function rejectVisit($id)
@@ -295,7 +295,7 @@ class DoctorController extends Controller
         $appointment = $this->findDoctorAppointment($id);
 
         if ($appointment->status === 'completed') {
-            return redirect('/ListaWizyt')->with('error', 'Nie można odwołać zakończonej wizyty.');
+            return redirect()->back()->with('error', 'Nie można odwołać zakończonej wizyty.');
         }
 
         $slot = $appointment->slot;
@@ -307,7 +307,7 @@ class DoctorController extends Controller
         $appointment->status = 'cancelled';
         $appointment->save();
 
-        return redirect('/ListaWizyt')->with('success', 'Wizyta została odwołana.');
+        return redirect()->back()->with('success', 'Wizyta została odwołana.');
     }
 
     public function completeVisit(Request $request, $id)
@@ -315,18 +315,23 @@ class DoctorController extends Controller
         $appointment = $this->findDoctorAppointment($id);
 
         if (!in_array($appointment->status, ['pending', 'confirmed'], true)) {
-            return redirect('/ListaWizyt')->with('error', 'Tej wizyty nie można zakończyć.');
+            return redirect()->back()->with('error', 'Tej wizyty nie można zakończyć.');
         }
 
         $appointment->status = 'completed';
         $appointment->save();
 
-        return redirect('/ListaWizyt')->with('success', 'Wizyta zakończona.');
+        return redirect()->back()->with('success', 'Wizyta zakończona.');
     }
 
     private function findDoctorAppointment($id): \App\Models\Appointment
     {
         $user = Auth::user();
+
+        if ($user->role === 'admin') {
+            return \App\Models\Appointment::findOrFail($id);
+        }
+
         $profile = DoctorProfile::where('user_id', $user->id)->firstOrFail();
 
         return \App\Models\Appointment::whereHas('slot', function ($query) use ($profile) {

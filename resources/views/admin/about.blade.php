@@ -15,9 +15,12 @@
         <a href="{{ url('/admin/doctor-applications') }}" class="nav-btn">Zgłoszenia Lekarzy</a>
         <a href="{{ url('/admin/specjalizacje') }}" class="nav-btn">Specjalizacje</a>
         <a href="{{ url('/admin/godziny-pracy') }}" class="nav-btn">Godziny Pracy</a>
+        <a href="{{ url('/admin/wizyty') }}" class="nav-btn">Wizyty Lekarzy</a>
         <a href="{{ url('/admin/homepage') }}" class="nav-btn">Strona Główna</a>
         <a href="{{ url('/admin/about') }}" class="nav-btn active">O nas</a>
         <a href="{{ url('/admin/contact') }}" class="nav-btn">Kontakt</a>
+        <a href="{{ url('/admin/') }}" class="nav-btn">Kontakt</a>
+
     </div>
 
     <div class="admin-toolbar" style="margin-bottom: 25px;">

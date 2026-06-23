@@ -39,7 +39,7 @@
                                     Data: {{ $app->slot ? $app->slot->start_time->format('d.m.Y H:i') : 'brak daty' }}
                                 </span>
                             </div>
-                            
+
                             <form action="{{ url('/PanelLekarza/pacjent/'.$patient->id.'/diagnoza') }}" method="POST">
                                 @csrf
                                 <input type="hidden" name="appointment_id" value="{{ $app->id }}">

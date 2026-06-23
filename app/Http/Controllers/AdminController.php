@@ -230,4 +230,61 @@ class AdminController extends Controller
     {
         return view('admin.contact');
     }
+
+    public function adminDoctorVisits(Request $request)
+    {
+        $doctors = \App\Models\DoctorProfile::where('is_accepted', true)
+            ->with('user')
+            ->orderBy('id')
+            ->get();
+
+        $selectedDoctorId = $request->get('doctor_id', $doctors->first()?->id);
+        $profile = $doctors->firstWhere('id', (int) $selectedDoctorId) ?? $doctors->first();
+
+        if (!$profile) {
+            return view('admin.wizyty', [
+                'doctors' => collect(),
+                'profile' => null,
+                'selectedDoctorId' => null,
+                'pendingAppointments' => collect(),
+                'confirmedAppointments' => collect(),
+                'completedAppointments' => collect(),
+                'cancelledAppointments' => collect(),
+            ]);
+        }
+
+        $baseQuery = fn () => \App\Models\Appointment::whereHas('slot', function ($query) use ($profile) {
+            $query->where('doctor_id', $profile->id);
+        })->with(['patient', 'slot', 'service']);
+
+        $pendingAppointments = $baseQuery()
+            ->where('status', 'pending')
+            ->orderBy('id', 'desc')
+            ->get();
+
+        $confirmedAppointments = $baseQuery()
+            ->where('status', 'confirmed')
+            ->orderBy('id', 'desc')
+            ->get();
+
+        $completedAppointments = $baseQuery()
+            ->where('status', 'completed')
+            ->orderBy('id', 'desc')
+            ->get();
+
+        $cancelledAppointments = $baseQuery()
+            ->where('status', 'cancelled')
+            ->orderBy('id', 'desc')
+            ->get();
+
+        return view('admin.wizyty', compact(
+            'doctors',
+            'profile',
+            'selectedDoctorId',
+            'pendingAppointments',
+            'confirmedAppointments',
+            'completedAppointments',
+            'cancelledAppointments'
+        ));
+    }
 }
