@@ -18,11 +18,14 @@ class AdminController extends Controller
         $query = User::orderBy('id', 'asc');
 
         if ($search) {
-            $term = '%' . mb_strtolower($search) . '%';
-            $query->where(function ($q) use ($term) {
-                $q->whereRaw('LOWER(first_name) LIKE ?', [$term])
-                  ->orWhereRaw('LOWER(last_name) LIKE ?', [$term])
-                  ->orWhereRaw('LOWER(email) LIKE ?', [$term]);
+            $driver = \DB::connection()->getDriverName();
+            $like = $driver === 'pgsql' ? 'ilike' : 'like';
+            $term = '%' . $search . '%';
+
+            $query->where(function ($q) use ($term, $like) {
+                $q->where('first_name', $like, $term)
+                  ->orWhere('last_name', $like, $term)
+                  ->orWhere('email', $like, $term);
             });
         }
 

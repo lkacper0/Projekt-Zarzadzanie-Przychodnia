@@ -35,7 +35,7 @@ class PatientController extends Controller
 
         $completedAppointments = Appointment::where('patient_id', $user->id)
             ->where('status', 'completed')
-            ->with(['slot.doctor.user', 'service'])
+            ->with(['slot.doctor.user', 'service', 'review'])
             ->orderBy('id', 'desc')
             ->get();
 
@@ -111,18 +111,29 @@ class PatientController extends Controller
         $search = $request->get('search');
         $specializationId = $request->get('specialization');
         $tagId = $request->get('tag');
+        $tagIds = $request->get('tags');
+        if ($tagId && !is_array($tagIds)) {
+            $tagIds = [$tagId];
+        } elseif (!is_array($tagIds)) {
+            $tagIds = [];
+        }
+        $tagIds = array_map('intval', $tagIds);
+
         $sort = $request->get('sort', 'alphabetical');
 
         $query = DoctorProfile::where('is_accepted', true)
             ->with(['user', 'specializations', 'tags']);
 
         if ($search) {
-            $term = '%' . mb_strtolower($search) . '%';
-            $query->where(function ($q) use ($term) {
-                $q->whereRaw('LOWER(bio) LIKE ?', [$term])
-                  ->orWhereHas('user', function ($qu) use ($term) {
-                      $qu->whereRaw('LOWER(first_name) LIKE ?', [$term])
-                         ->orWhereRaw('LOWER(last_name) LIKE ?', [$term]);
+            $driver = \DB::connection()->getDriverName();
+            $like = $driver === 'pgsql' ? 'ilike' : 'like';
+            $term = '%' . $search . '%';
+
+            $query->where(function ($q) use ($term, $like) {
+                $q->where('bio', $like, $term)
+                  ->orWhereHas('user', function ($qu) use ($term, $like) {
+                      $qu->where('first_name', $like, $term)
+                         ->orWhere('last_name', $like, $term);
                   });
             });
         }
@@ -133,10 +144,12 @@ class PatientController extends Controller
             });
         }
 
-        if ($tagId) {
-            $query->whereHas('tags', function ($q) use ($tagId) {
-                $q->where('tag_id', $tagId);
-            });
+        if (!empty($tagIds)) {
+            foreach ($tagIds as $tagId) {
+                $query->whereHas('tags', function ($q) use ($tagId) {
+                    $q->where('tag_id', $tagId);
+                });
+            }
         }
 
         if ($sort === 'rating') {
@@ -160,7 +173,22 @@ class PatientController extends Controller
         $specializations = \App\Models\Specialization::orderBy('name', 'asc')->get();
         $tags = \App\Models\Tag::orderBy('name', 'asc')->get();
 
-        return view('patient.search_doctors', compact('doctors', 'specializations', 'tags', 'search', 'specializationId', 'tagId', 'sort'));
+        return view('patient.search_doctors', compact('doctors', 'specializations', 'tags', 'search', 'specializationId', 'tagId', 'tagIds', 'sort'));
+    }
+
+    public function showDoctorProfile($id)
+    {
+        $doctor = DoctorProfile::where('id', $id)
+            ->where('is_accepted', true)
+            ->with(['user', 'specializations', 'tags', 'gallery'])
+            ->firstOrFail();
+
+        $reviews = \App\Models\Review::where('doctor_id', $id)
+            ->with('patient')
+            ->orderBy('id', 'desc')
+            ->get();
+
+        return view('patient.doctor_profile', compact('doctor', 'reviews'));
     }
 
     public function editProfile()
@@ -224,6 +252,54 @@ class PatientController extends Controller
             }
         });
 
-        return redirect('/ListaWizyt')->with('success', 'Wizyta została pomyślnie odwołana.');
+        return redirect('/ListaWizyt')->with('success', 'Wizyta została pomyślnie odwołana.');}
+    public function showReviewForm($id)
+    {
+        $user = Auth::user();
+        $appointment = Appointment::where('patient_id', $user->id)
+            ->where('status', 'completed')
+            ->with(['slot.doctor.user', 'service'])
+            ->findOrFail($id);
+
+        $exists = \App\Models\Review::where('appointment_id', $id)->exists();
+        if ($exists) {
+            return redirect('/ListaWizyt')->with('error', 'Już dodałeś opinię dla tej wizyty.');
+        }
+
+        return view('patient.add_review', compact('appointment'));
+    }
+
+    public function storeReview(Request $request, $id)
+    {
+        $user = Auth::user();
+        $appointment = Appointment::where('patient_id', $user->id)
+            ->where('status', 'completed')
+            ->findOrFail($id);
+
+        $exists = \App\Models\Review::where('appointment_id', $id)->exists();
+        if ($exists) {
+            return redirect('/ListaWizyt')->with('error', 'Już dodałeś opinię dla tej wizyty.');
+        }
+
+        $request->validate([
+            'rating' => 'required|integer|min:1|max:5',
+            'comment' => 'nullable|string|max:1000',
+        ]);
+
+        \App\Models\Review::create([
+            'appointment_id' => $appointment->id,
+            'patient_id' => $user->id,
+            'doctor_id' => $appointment->slot->doctor_id,
+            'rating' => $request->rating,
+            'comment' => $request->comment,
+        ]);
+
+        $doctorId = $appointment->slot->doctor_id;
+        $avgRating = \App\Models\Review::where('doctor_id', $doctorId)->avg('rating');
+        $doctorProfile = DoctorProfile::findOrFail($doctorId);
+        $doctorProfile->avg_rating = round($avgRating, 2);
+        $doctorProfile->save();
+
+        return redirect('/ListaWizyt')->with('success', 'Opinia została dodana pomyślnie!');
     }
 }

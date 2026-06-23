@@ -49,10 +49,32 @@
                     </td>
                     <td>
                         @if($app->status === 'pending' || $app->status === 'confirmed')
-                            <form action="{{ url('/ListaWizyt/' . $app->id . '/odwolaj') }}" method="POST" style="display:inline-block;" onsubmit="return confirm('Czy na pewno chcesz odwołać tę wizytę?');">
+                            <form action="{{ url('/ListaWizyt/' . $app->id . '/odwolaj') }}"
+                                method="POST"
+                                style="display:inline-block;"
+                                onsubmit="return confirm('Czy na pewno chcesz odwołać tę wizytę?');">
                                 @csrf
-                                <button type="submit" class="btn-cancel" style="background-color: #ef4444; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 12px;">Odwołaj</button>
+                                <button type="submit"
+                                        class="btn-cancel"
+                                        style="background-color: #ef4444; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 12px;">
+                                    Odwołaj
+                                </button>
                             </form>
+
+                        @elseif($app->status === 'completed')
+                            @if($app->review)
+                                <span class="badge-status"
+                                    style="background-color: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; padding: 4px 8px; font-size: 12px; border-radius: 12px; font-weight: 600;">
+                                    Ocena: {{ $app->review->rating }} ★
+                                </span>
+                            @else
+                                <a href="{{ url('/Wizyta/' . $app->id . '/Opinia') }}"
+                                class="btn-auth"
+                                style="padding: 6px 12px; font-size: 12px; width: auto; display: inline-block; text-decoration: none; box-shadow: none; border-radius: 8px;">
+                                    Dodaj opinię
+                                </a>
+                            @endif
+
                         @else
                             -
                         @endif

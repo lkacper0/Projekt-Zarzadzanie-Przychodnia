@@ -15,6 +15,10 @@
         <a href="{{ url('/admin/reviews') }}" class="nav-btn">Opinie</a>
         <a href="{{ url('/admin/doctor-applications') }}" class="nav-btn">Zgłoszenia Lekarzy</a>
         <a href="{{ url('/admin/specjalizacje') }}" class="nav-btn active">Specjalizacje</a>
+        <a href="{{ url('/admin/godziny-pracy') }}" class="nav-btn">Godziny Pracy</a>
+        <a href="{{ url('/admin/homepage') }}" class="nav-btn">Strona Główna</a>
+        <a href="{{ url('/admin/about') }}" class="nav-btn">O nas</a>
+        <a href="{{ url('/admin/contact') }}" class="nav-btn">Kontakt</a>
     </div>
 
     @if(session('success'))
@@ -34,10 +38,10 @@
     @endif
 
     <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 30px; align-items: start; margin-top: 20px;">
-        
+
         <div style="background: #fff; padding: 20px; border: 1px solid #ddd; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
             <h3 style="margin-top: 0; color: #003366; border-bottom: 2px solid #003366; padding-bottom: 8px; margin-bottom: 15px;">Dodaj Specjalizację</h3>
-            
+
             <form action="{{ url('/admin/specjalizacje') }}" method="POST">
                 @csrf
                 <div style="margin-bottom: 15px;">
