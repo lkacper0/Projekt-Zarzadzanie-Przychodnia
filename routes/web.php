@@ -51,6 +51,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::delete('/admin/godziny-pracy/slot/{id}/usun', [ScheduleController::class, 'adminDeleteSlot']);
 
     Route::get('/admin/wizyty', [AdminController::class, 'adminDoctorVisits']);
+    Route::delete('/admin/wizyty/{id}', [AdminController::class, 'destroyAppointment']);
 
     Route::get('/admin/uslugi', [AdminController::class, 'adminDoctorServices']);
     Route::get('/admin/uslugi/dodaj', [AdminController::class, 'adminCreateService']);

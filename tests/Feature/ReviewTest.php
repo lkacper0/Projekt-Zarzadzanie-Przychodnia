@@ -190,4 +190,59 @@ class ReviewTest extends TestCase
         ]);
         $response->assertRedirect('/ListaWizyt');
     }
+
+    public function test_admin_can_delete_appointment(): void
+    {
+        $admin = User::create([
+            'first_name' => 'Admin',
+            'last_name' => 'System',
+            'email' => 'admin_test@example.com',
+            'password_hash' => Hash::make('password'),
+            'role' => 'admin',
+            'pesel' => '90010199999',
+            'is_active' => true,
+        ]);
+
+        $appointment = Appointment::create([
+            'slot_id' => $this->slot->id,
+            'patient_id' => $this->patient->id,
+            'service_id' => $this->service->id,
+            'status' => 'confirmed',
+        ]);
+
+        // Assert slot is booked
+        $this->slot->refresh();
+        $this->assertTrue((bool)$this->slot->is_booked);
+
+        $response = $this->actingAs($admin)->delete('/admin/wizyty/' . $appointment->id);
+        $response->assertStatus(302); // redirect back
+
+        $this->assertDatabaseMissing('appointments', [
+            'id' => $appointment->id,
+        ]);
+
+        // Slot should be free now
+        $this->slot->refresh();
+        $this->assertFalse((bool)$this->slot->is_booked);
+    }
+
+    public function test_non_admin_cannot_delete_appointment(): void
+    {
+        $appointment = Appointment::create([
+            'slot_id' => $this->slot->id,
+            'patient_id' => $this->patient->id,
+            'service_id' => $this->service->id,
+            'status' => 'confirmed',
+        ]);
+
+        $response = $this->actingAs($this->patient)->delete('/admin/wizyty/' . $appointment->id);
+        $response->assertStatus(403);
+
+        $response = $this->actingAs($this->doctorUser)->delete('/admin/wizyty/' . $appointment->id);
+        $response->assertStatus(403);
+
+        $this->assertDatabaseHas('appointments', [
+            'id' => $appointment->id,
+        ]);
+    }
 }

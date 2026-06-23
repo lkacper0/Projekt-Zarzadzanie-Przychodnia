@@ -5,6 +5,8 @@
 @section('content')
 <link rel="stylesheet" href="{{ asset('css/admin/admin.css') }}">
 <link rel="stylesheet" href="{{ asset('css/doctor/panel.css') }}">
+<link rel="stylesheet" href="{{ asset('css/schedule.css') }}">
+<link rel="stylesheet" href="{{ asset('css/admin/wizyty.css') }}">
 
 <div class="admin-container">
     <h1 class="admin-title">Panel Administratora</h1>
@@ -29,11 +31,11 @@
         <div class="alert-error">{{ session('error') }}</div>
     @endif
 
-    <div class="doc-card" style="margin-bottom: 24px; padding: 20px;">
+    <div class="doctor-select-card">
         <form method="GET" action="{{ url('/admin/wizyty') }}" class="admin-search-form">
-            <label for="doctor_id" style="font-weight: bold; display: block; margin-bottom: 8px;">Wybierz lekarza:</label>
-            <div style="display: flex; gap: 10px;">
-                <select name="doctor_id" id="doctor_id" class="form-control" style="padding: 10px; flex-grow: 1; border-radius: 4px; border: 1px solid #ccc;">
+            <label for="doctor_id" class="select-label">Zarządzanie wizytami lekarza:</label>
+            <div class="select-wrapper">
+                <select name="doctor_id" id="doctor_id" class="custom-select">
                     <option value="">-- Wybierz lekarza z listy --</option>
                     @foreach($doctors as $doc)
                         <option value="{{ $doc->id }}" {{ isset($selectedDoctorId) && $selectedDoctorId == $doc->id ? 'selected' : '' }}>
@@ -41,7 +43,7 @@
                         </option>
                     @endforeach
                 </select>
-                <button type="submit" class="nav-btn active" style="border: none; cursor: pointer;">Pokaż wizyty</button>
+                <button type="submit" class="btn-show-visits">Pokaż wizyty</button>
             </div>
         </form>
     </div>
@@ -51,7 +53,7 @@
             <p>Wybierz lekarza z powyższej listy, aby zarządzać jego wizytami.</p>
         </div>
     @else
-        <div class="booking-doctor-header" style="margin-bottom: 24px;">
+        <div class="booking-doctor-header">
             <div class="booking-doctor-info">
                 <div class="doctor-avatar doctor-avatar-lg">
                     @if($profile->profile_photo)
@@ -60,11 +62,12 @@
                         <span>{{ strtoupper(substr($profile->user->first_name, 0, 1)) }}{{ strtoupper(substr($profile->user->last_name, 0, 1)) }}</span>
                     @endif
                 </div>
-                <div>
+                <div class="doctor-meta">
+                    <span class="admin-badge">Widok Administratora</span>
                     <h2 class="booking-title" style="margin-bottom: 4px;">
                         dr {{ $profile->user->first_name }} {{ $profile->user->last_name }}
                     </h2>
-                    <p class="booking-subtitle">Zarządzasz widokiem i akcjami wizyt jako Administrator.</p>
+                    <p class="booking-subtitle" style="margin: 0;">Zarządzasz widokiem i akcjami wizyt jako Administrator.</p>
                 </div>
             </div>
         </div>

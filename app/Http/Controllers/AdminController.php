@@ -307,6 +307,31 @@ class AdminController extends Controller
         ));
     }
 
+    public function destroyAppointment($id)
+    {
+        $appointment = \App\Models\Appointment::findOrFail($id);
+        $doctorProfileId = $appointment->slot ? $appointment->slot->doctor_id : null;
+
+        \Illuminate\Support\Facades\DB::transaction(function () use ($appointment) {
+            if ($appointment->slot) {
+                $appointment->slot->is_booked = false;
+                $appointment->slot->save();
+            }
+            $appointment->delete();
+        });
+
+        if ($doctorProfileId) {
+            $avgRating = \App\Models\Review::where('doctor_id', $doctorProfileId)->avg('rating');
+            $doctorProfile = \App\Models\DoctorProfile::find($doctorProfileId);
+            if ($doctorProfile) {
+                $doctorProfile->avg_rating = round($avgRating ?? 0.00, 2);
+                $doctorProfile->save();
+            }
+        }
+
+        return redirect()->back()->with('success', 'Wizyta została całkowicie usunięta.');
+    }
+
     public function adminDoctorServices(Request $request)
     {
         $doctors = \App\Models\DoctorProfile::where('is_accepted', true)
