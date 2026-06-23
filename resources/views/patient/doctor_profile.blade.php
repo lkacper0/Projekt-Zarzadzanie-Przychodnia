@@ -262,16 +262,16 @@
         </div>
     </div>
 
-    @if($doctor->gallery->count() > 0)
-        <div class="section-card">
-            <h2 class="section-title">📷 Galeria</h2>
-            <div class="gallery-grid">
-                @foreach($doctor->gallery as $photo)
-                    <img src="{{ asset($photo->path) }}" alt="Zdjęcie z galerii" onclick="openLightbox(this.src)">
-                @endforeach
-            </div>
+@if($doctor->gallery && $doctor->gallery->isNotEmpty())
+    <div class="section-card">
+        <h2 class="section-title">📷 Galeria</h2>
+        <div class="gallery-grid">
+            @foreach($doctor->gallery as $photo)
+                <img src="{{ asset($photo->image_url) }}" alt="Zdjęcie z galerii" onclick="openLightbox(this.src)">
+            @endforeach
         </div>
-    @endif
+    </div>
+@endif
 
     <div class="section-card">
         <h2 class="section-title">💬 Opinie pacjentów</h2>
