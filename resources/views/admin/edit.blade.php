@@ -65,6 +65,11 @@
             </select>
         </div>
 
+        <div class="form-group" id="bio-group" style="display: {{ old('role', $user->role) == 'doctor' ? 'block' : 'none' }};">
+            <label for="bio">Opis lekarza (Bio):</label>
+            <textarea name="bio" id="bio" class="form-control" rows="5">{{ old('bio', $profile->bio ?? '') }}</textarea>
+        </div>
+
         <div class="form-group mb-20">
 
             <label for="password">Hasło:</label>
@@ -83,3 +88,20 @@
 </div>
 
 @endsection
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const roleSelect = document.getElementById('role');
+    const bioGroup = document.getElementById('bio-group');
+
+    function toggleBio() {
+        if (roleSelect.value === 'doctor') {
+            bioGroup.style.display = 'block';
+        } else {
+            bioGroup.style.display = 'none';
+        }
+    }
+
+    roleSelect.addEventListener('change', toggleBio);
+});
+</script>

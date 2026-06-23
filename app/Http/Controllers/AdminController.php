@@ -67,7 +67,8 @@ class AdminController extends Controller
     public function edit($id)
     {
         $user = User::findOrFail($id);
-        return view('admin.edit', compact('user'));
+        $profile = \App\Models\DoctorProfile::where('user_id', $user->id)->first();
+        return view('admin.edit', compact('user', 'profile'));
 
     }
 
@@ -77,16 +78,6 @@ class AdminController extends Controller
         $user = User::findOrFail($id);
 
 
-        if ($request->input('role') === 'doctor') {
-            \App\Models\DoctorProfile::firstOrCreate(
-            ['user_id' => $user->id],
-            ['bio' => 'Profil utworzony automatycznie podczas edycji administratora.',
-            'is_accepted' => true,
-            'avg_rating' => 0.00]);
-
-        }
-
-
         $request->validate([
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
@@ -94,6 +85,7 @@ class AdminController extends Controller
             'pesel' => 'nullable|string|max:11',
             'role' => 'required|in:patient,doctor,admin',
             'password' => 'nullable|string|min:6',
+            'bio' => 'nullable|string|max:2000',
         ]);
 
 
@@ -108,6 +100,22 @@ class AdminController extends Controller
         }
 
         $user->save();
+
+        if ($request->input('role') === 'doctor') {
+            $profile = \App\Models\DoctorProfile::firstOrCreate(
+                ['user_id' => $user->id],
+                [
+                    'bio' => 'Profil utworzony automatycznie podczas edycji administratora.',
+                    'is_accepted' => true,
+                    'avg_rating' => 0.00
+                ]
+            );
+
+            if ($request->has('bio')) {
+                $profile->bio = $request->bio;
+                $profile->save();
+            }
+        }
 
         return redirect('/admin')->with('success', 'Dane zaktualizowane!');
     }
