@@ -176,6 +176,21 @@ class PatientController extends Controller
         return view('patient.search_doctors', compact('doctors', 'specializations', 'tags', 'search', 'specializationId', 'tagId', 'tagIds', 'sort'));
     }
 
+    public function showDoctorProfile($id)
+    {
+        $doctor = DoctorProfile::where('id', $id)
+            ->where('is_accepted', true)
+            ->with(['user', 'specializations', 'tags', 'gallery'])
+            ->firstOrFail();
+
+        $reviews = \App\Models\Review::where('doctor_id', $id)
+            ->with('patient')
+            ->orderBy('id', 'desc')
+            ->get();
+
+        return view('patient.doctor_profile', compact('doctor', 'reviews'));
+    }
+
     public function editProfile()
     {
         $user = Auth::user();

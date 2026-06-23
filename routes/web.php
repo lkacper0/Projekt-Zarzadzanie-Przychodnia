@@ -99,6 +99,7 @@ Route::middleware(['auth', 'role:patient'])->group(function () {
     Route::get('/PanelUzytkownika/edycja', [PatientController::class, 'editProfile']);
     Route::post('/PanelUzytkownika/edycja', [PatientController::class, 'updateProfile']);
     Route::get('/Lekarze', [PatientController::class, 'searchDoctors']);
+    Route::get('/Lekarze/{id}', [PatientController::class, 'showDoctorProfile']);
     Route::get('/DiagnozaZalecenia', [PatientController::class, 'diagnosis']);
 
     Route::get('/Rezerwacja', [ScheduleController::class, 'bookingIndex']);
