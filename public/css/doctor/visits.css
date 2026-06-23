@@ -1,0 +1,107 @@
+.booking-doctor-header {
+    background: linear-gradient(135deg, #ffffff, #f7fafc);
+    border-radius: 16px;
+    padding: 24px;
+    border: 1px solid #eef2f6;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    margin-bottom: 24px;
+}
+
+.booking-doctor-info {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.doctor-avatar {
+    flex-shrink: 0;
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #4a90e2, #357abd);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 1.5rem;
+    font-weight: 700;
+    overflow: hidden;
+}
+
+.doctor-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.doctor-avatar-lg {
+    width: 80px;
+    height: 80px;
+    font-size: 1.8rem;
+    border: 3px solid #4a90e2;
+    box-shadow: 0 4px 10px rgba(74, 144, 226, 0.2);
+}
+
+.doctor-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.doctor-panel-badge {
+    align-self: flex-start;
+    background: #d4edda;
+    color: #155724;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.booking-title {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #1a2b4a;
+    margin: 0;
+}
+
+.booking-subtitle {
+    font-size: 0.88rem;
+    color: #718096;
+}
+
+.btn-delete-visit {
+    background: linear-gradient(135deg, #e53e3e, #c53030) !important;
+    color: #ffffff !important;
+    border: none !important;
+    padding: 8px 16px !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    font-size: 0.82rem !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    box-shadow: 0 2px 6px rgba(229, 62, 62, 0.2) !important;
+}
+
+.btn-delete-visit:hover {
+    background: linear-gradient(135deg, #f56565, #e53e3e) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 12px rgba(229, 62, 62, 0.35) !important;
+}
+
+@media (max-width: 600px) {
+    .booking-doctor-info {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .doctor-panel-badge {
+        align-self: center;
+    }
+
+    .booking-title {
+        font-size: 1.1rem;
+    }
+}

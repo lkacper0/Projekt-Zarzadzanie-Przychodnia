@@ -13,6 +13,7 @@
         <a href="{{ url('/PanelLekarza') }}" class="nav-btn">Mój Profil</a>
         <a href="{{ url('/PanelLekarza/uslugi') }}" class="nav-btn active">Usługi &amp; Cennik</a>
         <a href="{{ url('/GodzinyPracy') }}" class="nav-btn">Godziny Pracy</a>
+        <a href="{{ url('/ListaWizyt') }}" class="nav-btn">Lista Wizyt</a>
     </div>
 
     @if(session('success'))

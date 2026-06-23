@@ -132,4 +132,5 @@ Route::middleware(['auth', 'role:patient,doctor,admin'])->group(function () {
     Route::post('/ListaWizyt/{id}/potwierdz', [DoctorController::class, 'confirmVisit']);
     Route::post('/ListaWizyt/{id}/odrzuc', [DoctorController::class, 'rejectVisit']);
     Route::post('/ListaWizyt/{id}/zakoncz', [DoctorController::class, 'completeVisit']);
+    Route::delete('/ListaWizyt/{id}', [DoctorController::class, 'destroyAppointment']);
 });

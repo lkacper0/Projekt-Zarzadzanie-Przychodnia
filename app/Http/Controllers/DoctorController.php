@@ -324,6 +324,26 @@ class DoctorController extends Controller
         return redirect()->back()->with('success', 'Wizyta zakończona.');
     }
 
+    public function destroyAppointment($id)
+    {
+        $user = Auth::user();
+        $profile = DoctorProfile::where('user_id', $user->id)->firstOrFail();
+
+        $appointment = \App\Models\Appointment::whereHas('slot', function ($query) use ($profile) {
+            $query->where('doctor_id', $profile->id);
+        })->findOrFail($id);
+
+        \Illuminate\Support\Facades\DB::transaction(function () use ($appointment) {
+            if ($appointment->slot) {
+                $appointment->slot->is_booked = false;
+                $appointment->slot->save();
+            }
+            $appointment->delete();
+        });
+
+        return redirect()->back()->with('success', 'Wizyta została usunięta.');
+    }
+
     private function findDoctorAppointment($id): \App\Models\Appointment
     {
         $user = Auth::user();

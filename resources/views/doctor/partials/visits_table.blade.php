@@ -11,14 +11,17 @@
                 @endif
                 @if($showActions !== 'cancelled')
                     <th>Akcje</th>
-                @elseif(auth()->user() && auth()->user()->role === 'admin')
+                @elseif(auth()->user() && in_array(auth()->user()->role, ['admin', 'doctor']))
                     <th>Akcje</th>
                 @endif
             </tr>
         </thead>
         <tbody>
             @foreach($appointments as $app)
-                @php $isAdmin = auth()->user() && auth()->user()->role === 'admin'; @endphp
+                @php
+                    $isAdmin = auth()->user() && auth()->user()->role === 'admin';
+                    $isDoctor = auth()->user() && auth()->user()->role === 'doctor';
+                @endphp
                 <tr>
                     <td class="visit-patient">
                         {{ $app->patient ? $app->patient->first_name . ' ' . $app->patient->last_name : 'Nieznany Pacjent' }}
@@ -67,6 +70,12 @@
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-danger btn-sm btn-delete-visit">Usuń wizytę</button>
                                 </form>
+                            @elseif($isDoctor)
+                                <form action="{{ url('/ListaWizyt/'.$app->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Czy na pewno chcesz CAŁKOWICIE usunąć tę wizytę z bazy danych?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger btn-sm btn-delete-visit">Usuń wizytę</button>
+                                </form>
                             @endif
                         </td>
                     @elseif($showActions === 'confirmed')
@@ -85,6 +94,12 @@
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-danger btn-sm btn-delete-visit">Usuń wizytę</button>
                                 </form>
+                            @elseif($isDoctor)
+                                <form action="{{ url('/ListaWizyt/'.$app->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Czy na pewno chcesz CAŁKOWICIE usunąć tę wizytę z bazy danych?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger btn-sm btn-delete-visit">Usuń wizytę</button>
+                                </form>
                             @endif
                         </td>
                     @elseif($showActions === 'completed')
@@ -95,15 +110,29 @@
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-danger btn-sm btn-delete-visit">Usuń wizytę</button>
                                 </form>
+                            @elseif($isDoctor)
+                                <form action="{{ url('/ListaWizyt/'.$app->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Czy na pewno chcesz CAŁKOWICIE usunąć tę wizytę z bazy danych?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger btn-sm btn-delete-visit">Usuń wizytę</button>
+                                </form>
                             @endif
                         </td>
-                    @elseif($showActions === 'cancelled' && $isAdmin)
+                    @elseif($showActions === 'cancelled' && ($isAdmin || $isDoctor))
                         <td class="visit-actions">
-                            <form action="{{ url('/admin/wizyty/'.$app->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Czy na pewno chcesz CAŁKOWICIE usunąć tę wizytę z bazy danych?');">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-danger btn-sm btn-delete-visit">Usuń wizytę</button>
-                            </form>
+                            @if($isAdmin)
+                                <form action="{{ url('/admin/wizyty/'.$app->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Czy na pewno chcesz CAŁKOWICIE usunąć tę wizytę z bazy danych?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger btn-sm btn-delete-visit">Usuń wizytę</button>
+                                </form>
+                            @elseif($isDoctor)
+                                <form action="{{ url('/ListaWizyt/'.$app->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Czy na pewno chcesz CAŁKOWICIE usunąć tę wizytę z bazy danych?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger btn-sm btn-delete-visit">Usuń wizytę</button>
+                                </form>
+                            @endif
                         </td>
                     @endif
                 </tr>
