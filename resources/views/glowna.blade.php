@@ -7,8 +7,8 @@
 @endpush
 
 @section('content')
-<div id="homepage-container">
-    <div id="homepage-editable-content"></div>
+<div id="homepage-container" style="max-width: 1000px; margin: 40px auto; padding: 20px;">
+    <div id="homepage-content"></div>
 
     <h1 id="best-doctors-title" style="display: none;">Najlepsi Lekarze</h1>
     <div id="lekarze"></div>
@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         const response = await fetch('/api/homepage');
         const data = await response.json();
         if (response.ok && data.success) {
-            document.getElementById('homepage-editable-content').innerHTML = data.content;
+            document.getElementById('homepage-content').innerHTML = data.content;
 
             const doctorsContainer = document.getElementById('lekarze');
             const titleElement = document.getElementById('best-doctors-title');
@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             }
         }
     } catch (err) {
-        console.error(err);
+        document.getElementById('homepage-content').innerHTML = '<p>Nie udało się załadować treści strony.</p>';
     }
 });
 </script>

@@ -13,6 +13,8 @@
         <a href="{{ url('/admin') }}" class="nav-btn">Użytkownicy</a>
         <a href="{{ url('/admin/reviews') }}" class="nav-btn">Opinie</a>
         <a href="{{ url('/admin/doctor-applications') }}" class="nav-btn">Zgłoszenia Lekarzy</a>
+        <a href="{{ url('/admin/specjalizacje') }}" class="nav-btn">Specjalizacje</a>
+        <a href="{{ url('/admin/godziny-pracy') }}" class="nav-btn">Godziny Pracy</a>
         <a href="{{ url('/admin/homepage') }}" class="nav-btn">Strona Główna</a>
         <a href="{{ url('/admin/about') }}" class="nav-btn active">O nas</a>
         <a href="{{ url('/admin/contact') }}" class="nav-btn">Kontakt</a>
@@ -24,7 +26,10 @@
                 <label style="font-weight: bold; color: #003366;">Importuj treść z pliku HTML:</label>
                 <input type="file" id="html-file-input" accept=".html,.txt" style="padding: 5px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px;">
             </div>
-            <button id="save-btn" class="btn btn-success" style="padding: 10px 25px;">Zapisz Zmiany</button>
+            <div style="display: flex; gap: 10px;">
+                <button id="export-btn" class="btn btn-secondary" style="padding: 10px 25px;">Eksportuj HTML</button>
+                <button id="save-btn" class="btn btn-success" style="padding: 10px 25px;">Zapisz Zmiany</button>
+            </div>
         </div>
     </div>
 
@@ -53,6 +58,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     const alertBox = document.getElementById('alert-box');
     const saveBtn = document.getElementById('save-btn');
+    const exportBtn = document.getElementById('export-btn');
     const fileInput = document.getElementById('html-file-input');
 
     function showAlert(message, isSuccess) {
@@ -91,6 +97,17 @@ document.addEventListener('DOMContentLoaded', async function() {
             showAlert('Plik został zaimportowany do edytora. Pamiętaj, aby zapisać zmiany!', true);
         };
         reader.readAsText(file);
+    });
+
+    exportBtn.addEventListener('click', function() {
+        const html = '<!DOCTYPE html>\n<html lang="pl">\n<head><meta charset="UTF-8"><title>O nas</title></head>\n<body>\n' + quill.root.innerHTML + '\n</body>\n</html>';
+        const blob = new Blob([html], { type: 'text/html' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'o-nas.html';
+        a.click();
+        URL.revokeObjectURL(url);
     });
 
     saveBtn.addEventListener('click', async function() {
